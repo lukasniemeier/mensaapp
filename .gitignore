@@ -1,3 +1,7 @@
+.gradle/
+gradle/
+MensaApp/build
+
 # built application files
 *.apk
 *.ap_
@@ -27,5 +31,3 @@ proguard/
 *.ipr
 *.iws
 .idea/
-.gradle/
-gradle/
