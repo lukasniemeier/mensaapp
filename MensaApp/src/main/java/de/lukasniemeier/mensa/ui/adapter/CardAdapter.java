@@ -25,12 +25,12 @@ import de.lukasniemeier.mensa.R;
 
 public abstract class CardAdapter<T> extends ArrayAdapter<CardState<T>> {
 
-    private LayoutInflater inflater;
+    private final LayoutInflater inflater;
 
-    private Animator animation;
+    private final Animator animation;
     private int runningAnimations;
-    private Set<T> animationSet;
-    private Map<CardState<T>, ViewHolder<T>> holderMap;
+    private final Set<T> animationSet;
+    private final Map<CardState<T>, ViewHolder<T>> holderMap;
     private ViewTreeObserver.OnPreDrawListener cardHeightEnsurer;
 
     public CardAdapter(Context context) {
@@ -170,7 +170,7 @@ public abstract class CardAdapter<T> extends ArrayAdapter<CardState<T>> {
     }
 
     private static class ViewHolder<T> {
-        public CardState<T> state;
+        public final CardState<T> state;
         public boolean wasTurned;
         public int parentWidth;
         public Integer maxHeight;
@@ -187,8 +187,7 @@ public abstract class CardAdapter<T> extends ArrayAdapter<CardState<T>> {
         int measureSpecWidth = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
         int measureSpecHeight = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         view.measure(measureSpecWidth, measureSpecHeight);
-        int result = view.getMeasuredHeight();
-        return result;
+        return view.getMeasuredHeight();
     }
 
     private class CardHeightChangeNotifier implements ViewTreeObserver.OnPreDrawListener {

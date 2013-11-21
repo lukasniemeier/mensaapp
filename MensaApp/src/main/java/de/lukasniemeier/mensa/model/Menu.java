@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class Menu implements Serializable {
 
-    private List<Meal> meals;
+    private final List<Meal> meals;
 
     public Menu() {
         this.meals = new ArrayList<Meal>();

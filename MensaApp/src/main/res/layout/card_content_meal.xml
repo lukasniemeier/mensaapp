@@ -36,7 +36,7 @@
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:textColor="@android:color/primary_text_light"
                 android:textSize="20sp"
-                android:text="Description"/>
+                android:text="@android:string/untitled"/>
 
         </LinearLayout>
 

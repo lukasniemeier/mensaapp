@@ -10,7 +10,6 @@
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="missing_menu">There is no menu for date %1$s.</string>
-    <string name="refresh_error">Failed to refresh: %1$s</string>
     <string name="menu_empty_description_too_early">Today\'s bill of fare is not yet available. Come back later.</string>
     <string name="menu_empty_description_too_late">Today\'s bill of fare is currently not available. Lunch time is over.</string>
     <string name="menu_error_description">There was a problem while refreshing. Please try again later.</string>
@@ -25,7 +24,6 @@
     <string name="pref_title_select_mensa_default">Select default mensa</string>
     <string name="pref_title_enable_mensa_default">Activate \'default mensa\'</string>
     <string name="pref_none_select_mensa_default">None</string>
-    <string name="pref_header_prices">Prices</string>
     <string name="pref_title_enable_show_prices">Show prices</string>
     <string name="meal_type_unknown">Unknown</string>
     <string name="meal_type_fish">Fish</string>
@@ -35,9 +33,7 @@
     <string name="meal_type_mensavital">mensaVital</string>
     <string name="meal_type_beef">Beef</string>
     <string name="meal_type_vegan">Vegan</string>
-    <string name="price_1_40">1,40€</string>
-    <string name="price_2_00">2,00€</string>
-    <string name="price_2_50">2,50€</string><string name="about_text">No responsibility is accepted for the accuracy of presented information.This app is not affiliated with \'Studentenwerk Potsdam\'.\nSome icons made by \'PixelMixer\' (http://pixel-mixer.com).\nThis app\'s version is Kathi\'s special birthday edition.</string>
+    <string name="about_text">No responsibility is accepted for the accuracy of presented information.This app is not affiliated with \'Studentenwerk Potsdam\'.\nSome icons made by \'PixelMixer\' (http://pixel-mixer.com).\nThis app\'s version is Kathi\'s special birthday edition.</string>
     <string name="about_title">About</string>
     <string name="meal_additives_no">There are no additives</string>
     <string-array name="meal_additives_name_map">

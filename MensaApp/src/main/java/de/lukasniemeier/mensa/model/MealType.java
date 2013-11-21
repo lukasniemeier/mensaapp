@@ -20,9 +20,9 @@ public enum MealType {
     OVOLACTOVEGETABIL(R.string.meal_type_ovolactovegetabil, R.drawable.lacto, "ovo-lacto-vegetabil"),
     MENSAVITAL(R.string.meal_type_mensavital, R.drawable.vital, "mensaVital");
 
-    private String name;
-    private Bitmap icon;
-    private String parseString;
+    private final String name;
+    private final Bitmap icon;
+    private final String parseString;
 
     private MealType(int nameId, int iconId, String displayName) {
         ResourceService service = MensaApplication.getResourceService();

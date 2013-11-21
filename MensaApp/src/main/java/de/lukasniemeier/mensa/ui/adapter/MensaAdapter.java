@@ -30,8 +30,8 @@ public class MensaAdapter extends CardAdapter<Mensa> {
             return instance;
         }
 
-        private Map<String, Bitmap> bitmapMap;
-        private Bitmap unknownBitmap;
+        private final Map<String, Bitmap> bitmapMap;
+        private final Bitmap unknownBitmap;
 
         private MensaImageMapper(Context context) {
             bitmapMap = new HashMap<String, Bitmap>();

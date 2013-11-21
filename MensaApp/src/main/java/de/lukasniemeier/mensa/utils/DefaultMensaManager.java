@@ -12,7 +12,7 @@ public class DefaultMensaManager {
     public static final String SETTINGS_LIST_MENSA_DEFAULT = "settings_list_mensa_default";
     public static final String SETTINGS_CHECK_MENSA_DEFAULT = "settings_check_mensa_default";
 
-    private SharedPreferences sharedPreferences;
+    private final SharedPreferences sharedPreferences;
 
     public DefaultMensaManager(Context context) {
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);

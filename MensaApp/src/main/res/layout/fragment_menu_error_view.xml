@@ -10,25 +10,16 @@
     android:layout_marginLeft="@dimen/activity_horizontal_margin"
     android:layout_marginRight="@dimen/activity_horizontal_margin">
 
-    <LinearLayout
+
+
+    <TextView
+        android:id="@+id/fragment_menu_error_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_dialog_alert_holo_light" />
-
-        <TextView
-            android:id="@+id/fragment_menu_error_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@android:color/secondary_text_light"
-            android:text="@string/menu_error_description" />
-
-    </LinearLayout>
+        android:layout_gravity="center"
+        android:textColor="@android:color/secondary_text_light"
+        android:text="@string/menu_error_description"
+        android:drawableLeft="@drawable/ic_dialog_alert_holo_light"/>
 
     <Button
         android:id="@+id/fragment_menu_error_button"

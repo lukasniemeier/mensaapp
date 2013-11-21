@@ -44,8 +44,6 @@ public class MenuActivity extends BaseActivity implements
 
     private static final String TAG = MenuActivity.class.getSimpleName();
 
-    public static final String ABOUT_DIALOG_TAG = "AboutDialog";
-
     public static final String EXTRA_MENSA_NAME = "EXTRA_MENSA_NAME";
     public static final String EXTRA_MENSA_SHORTNAME = "EXTRA_MENSA_SHORTNAME";
     public static final String EXTRA_MENSA_URL = "EXTRA_MENSA_URL";
