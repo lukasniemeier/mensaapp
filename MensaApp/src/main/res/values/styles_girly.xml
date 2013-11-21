@@ -29,12 +29,14 @@
         <item name="android:actionModeBackground">@drawable/cab_background_top_girly</item>
         <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_girly</item>
         <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Girly</item>
+        
+        
     </style>
 
     <style name="ActionBar.Solid.Girly" parent="@android:style/Widget.Holo.ActionBar.Solid">
-        <item name="android:background">@drawable/ab_background_textured_girly</item>
+        <item name="android:background">@drawable/ab_solid_girly</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_girly</item>
-        <item name="android:backgroundSplit">@drawable/ab_background_textured_girly</item>
+        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_girly</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Girly</item>
     </style>
 

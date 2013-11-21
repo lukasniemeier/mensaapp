@@ -7,6 +7,7 @@
         <item name="bottomBarStyle">@style/StudiBottomBarRelativeLayout</item>
         <item name="card_selector_overlay">@drawable/selector_overlay_studi</item>
         <item name="refresh_bar_color">@color/dark_green_studi</item>
+        <item name="background_color">@color/background_gray</item>
     </style>
 
     <style name="StudiBottomBarRelativeLayout">
@@ -19,6 +20,7 @@
         <item name="bottomBarStyle">@style/GirlyBottomBarRelativeLayout</item>
         <item name="card_selector_overlay">@drawable/selector_overlay_girly</item>
         <item name="refresh_bar_color">@color/dark_pink_girly</item>
+        <item name="background_color">@color/background_color_girly</item>
     </style>
 
     <style name="GirlyBottomBarRelativeLayout">

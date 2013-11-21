@@ -5,4 +5,5 @@
     <attr name="ribbonRightImage" format="reference" />
     <attr name="card_selector_overlay" format="reference" />
     <attr name="refresh_bar_color" format="color" />
+    <attr name="background_color" format="color" />
 </resources>
