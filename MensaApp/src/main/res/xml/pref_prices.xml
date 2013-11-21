@@ -1,0 +1,8 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:key="settings_check_prices"
+        android:title="@string/pref_title_enable_show_prices"
+        android:defaultValue="true" />
+
+</PreferenceScreen>

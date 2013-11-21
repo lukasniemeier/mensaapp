@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="4dp">
+
+        <FrameLayout
+            android:id="@+id/card_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="12dp"
+            android:background="@drawable/card_background"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/card_selector_overlay"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/card_ribbon_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?ribbonRightImage"
+        android:layout_gravity="top|right"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="6dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/card_ribbon_right_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="28dp"
+            android:layout_gravity="top|right"
+            android:textColor="@color/translucent_white"
+            android:textSize="20sp"
+            android:rotation="45"
+            android:layout_marginRight="8dp" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/card_ribbon_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?ribbonLeftImage"
+        android:layout_gravity="top|left"
+        android:layout_marginTop="6dp"
+        android:layout_marginLeft="6dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/card_ribbon_left_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="28dp"
+            android:layout_gravity="top|left"
+            android:textColor="@color/translucent_white"
+            android:textSize="20sp"
+            android:rotation="-45"
+            android:layout_marginLeft="8dp" />
+
+    </FrameLayout>
+
+</FrameLayout>

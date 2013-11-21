@@ -1,0 +1,46 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.6.1'
+    }
+}
+apply plugin: 'android'
+
+tasks.withType(Compile) {
+    options.compilerArgs << "-Xlint:unchecked"
+}
+
+project.ext {
+    signingProperty = "MensaApp.signing"
+    signingFileName = ""
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	compile 'com.android.support:support-v4:13.0.+'
+	compile 'com.github.chrisbanes.actionbarpulltorefresh:library:0.7.+'
+	compile 'org.jsoup:jsoup:1.7.2'
+    compile 'com.google.guava:guava:15.0'
+}
+
+if(project.hasProperty(project.signingProperty)) {
+    project.signingFileName = project.property(project.signingProperty) + ".gradle"
+    if (new File(project.signingFileName).exists()) {
+        apply from: project.signingFileName;
+    }
+}
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion "17.0.0"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 18
+    }
+}

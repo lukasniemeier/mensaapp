@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_gray">#e5e5e5</color>
+    <color name="translucent_white">#f0ffffff</color>
+
+    <color name="dark_green_studi">#2D4B2C</color>
+    <color name="bar_green_studi">#882F642C</color>
+    <color name="pressed_green_studi">#332F642C</color>
+
+
+    <color name="dark_pink_girly">#93002F</color>
+    <color name="bar_pink_girly">#88E20048</color>
+    <color name="pressed_pink_girly">#33E20048</color>
+
+    -->
+</resources>

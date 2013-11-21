@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/card_mensa_name"
+        android:layout_gravity="left|center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/primary_text_light"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:text="@android:string/untitled"/>
+
+    <ImageView
+        android:id="@+id/card_mensa_image"
+        android:layout_width="300dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/card_mensa_opening_times"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/primary_text_light"
+        android:text="@string/mensa_opening_times"/>
+
+    <TextView
+        android:id="@+id/card_mensa_address"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/primary_text_light"
+        android:text="@string/mensa_address"/>
+
+</LinearLayout>

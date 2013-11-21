@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="bottomBarStyle" format="reference" />
+    <attr name="ribbonLeftImage" format="reference" />
+    <attr name="ribbonRightImage" format="reference" />
+    <attr name="card_selector_overlay" format="reference" />
+    <attr name="refresh_bar_color" format="color" />
+</resources>

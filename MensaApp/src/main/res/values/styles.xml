@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Studi.Theme" parent="Theme.Studi">
+        <item name="ribbonLeftImage">@drawable/ribbon_left</item>
+        <item name="ribbonRightImage">@drawable/ribbon_right</item>
+        <item name="bottomBarStyle">@style/StudiBottomBarRelativeLayout</item>
+        <item name="card_selector_overlay">@drawable/selector_overlay_studi</item>
+        <item name="refresh_bar_color">@color/dark_green_studi</item>
+    </style>
+
+    <style name="StudiBottomBarRelativeLayout">
+        <item name="android:background">@color/bar_green_studi</item>
+    </style>
+
+    <style name="Theme.Girly.Theme" parent="Theme.Girly">
+        <item name="ribbonLeftImage">@drawable/ribbon_girly_left</item>
+        <item name="ribbonRightImage">@drawable/ribbon_girly_right</item>
+        <item name="bottomBarStyle">@style/GirlyBottomBarRelativeLayout</item>
+        <item name="card_selector_overlay">@drawable/selector_overlay_girly</item>
+        <item name="refresh_bar_color">@color/dark_pink_girly</item>
+    </style>
+
+    <style name="GirlyBottomBarRelativeLayout">
+        <item name="android:background">@color/bar_pink_girly</item>
+    </style>
+
+</resources>

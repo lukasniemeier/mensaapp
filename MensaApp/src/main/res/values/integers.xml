@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="card_flip_left_in_time_slow">700</integer>
+    <integer name="card_flip_left_in_time_slow_half">350</integer>
+
+    <integer name="card_flip_left_in_time">300</integer>
+    <integer name="card_flip_left_in_time_half">150</integer>
+
+    <integer name="bottom_bar_slide_up_delay">2500</integer>
+    <integer name="bottom_bar_slide_up_duration">1000</integer>
+</resources>

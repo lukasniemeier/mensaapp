@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Rotate back -->
+    <objectAnimator
+        android:valueFrom="271"
+        android:valueTo="360"
+        android:propertyName="rotationY"
+        android:interpolator="@android:interpolator/accelerate_decelerate"
+        android:duration="@integer/card_flip_left_in_time" />
+
+</set>
