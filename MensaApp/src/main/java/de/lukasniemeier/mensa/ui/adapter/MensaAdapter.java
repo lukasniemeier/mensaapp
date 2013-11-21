@@ -71,9 +71,7 @@ public class MensaAdapter extends CardAdapter<Mensa> {
     }
 
     @Override
-    protected void initializeView(View view, CardState<Mensa> mensaState, boolean hasBeenTurned) {
-        final Mensa mensa = mensaState.getValue();
-
+    protected void initializeView(View view, Mensa mensa, boolean isTurned, boolean hasBeenTurned) {
         TextView nameView = (TextView) view.findViewById(R.id.card_mensa_name);
         nameView.setText(mensa.getName());
 

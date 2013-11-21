@@ -12,13 +12,15 @@ public class Meal implements Serializable {
     private final String description;
     private final Collection<MealType> types;
     private final Collection<String> additives;
+    private final String price;
 
-    public Meal(String name, String description,
-                Collection<MealType> types, Collection<String> additives) {
+    public Meal(String name, String description, Collection<MealType> types,
+                Collection<String> additives, String price) {
         this.name = name;
         this.description = description;
         this.types = types;
         this.additives = additives;
+        this.price = price;
     }
 
     public String getName() {
@@ -37,6 +39,10 @@ public class Meal implements Serializable {
         return additives;
     }
 
+    public String getPrice() {
+        return price;
+    }
+
     @Override
     public String toString() {
         return "Meal{" +
@@ -44,6 +50,7 @@ public class Meal implements Serializable {
                 ", description='" + description + '\'' +
                 ", types='" + types + '\'' +
                 ", additives='" + additives + '\'' +
+                ", price='" + price + '\'' +
                 '}';
     }
 }

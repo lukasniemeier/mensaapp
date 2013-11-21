@@ -1,7 +1,6 @@
 package de.lukasniemeier.mensa.parser;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -53,7 +52,6 @@ public class PreviewMenuParser extends WeeklyMenuParser {
         Element dateElement = elements.first();
         try {
             String dateText = dateElement.text();
-            Log.i(PreviewMenuParser.class.getName(), String.format("Parsing date '%s'", dateText));
 
             Matcher match = menuDatePattern.matcher(dateText);
             if (match.matches()) {

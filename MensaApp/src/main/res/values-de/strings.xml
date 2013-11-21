@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Kathis Mensa App</string>
+    <string name="app_name">Mensa App</string>
     <string name="action_settings">Einstellungen</string>
     <string name="action_refresh">Aktualisieren</string>
     <string name="action_about">Über</string>
@@ -23,7 +23,7 @@
     <string name="title_activity_settings">Einstellungen</string>
     <string name="pref_header_general">Allgemein</string>
     <string name="pref_title_select_mensa_default">Wähle Standard-Mensa</string>
-    <string name="pref_title_enable_mensa_default">Aktiviere Option \'Standard-Mensa\'</string>
+    <string name="pref_title_enable_mensa_default">Aktiviere \'Standard-Mensa\'</string>
     <string name="pref_none_select_mensa_default">Keine</string>
     <string name="pref_header_prices">Preise</string>
     <string name="pref_title_enable_show_prices">Zeige Preise</string>
@@ -62,4 +62,5 @@
     <string name="pref_title_select_theme">Wähle Theme</string>
     <string name="mensa_opening_times">Öffnungszeiten</string>
     <string name="mensa_address">Adresse</string>
+    <string name="mensa_marked_as_default">\'%1$s als Standard gewählt.</string>
 </resources>

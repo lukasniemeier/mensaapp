@@ -1,10 +1,7 @@
 package de.lukasniemeier.mensa.ui;
 
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -15,12 +12,10 @@ import de.lukasniemeier.mensa.R;
 import de.lukasniemeier.mensa.model.Mensa;
 import de.lukasniemeier.mensa.ui.adapter.CardState;
 import de.lukasniemeier.mensa.ui.adapter.MensaAdapter;
-import de.lukasniemeier.mensa.ui.preference.SettingsActivity;
 import de.lukasniemeier.mensa.utils.DefaultMensaManager;
 
-public class MensaActivity extends ThemedActivity {
+public class MensaActivity extends BaseActivity {
 
-    public static final String ABOUT_DIALOG_TAG = "AboutDialog";
     public static final String EXTRA_NO_DEFAULT_REDIRECT = "EXTRA_NO_DEFAULT_REDIRECT";
 
     @Override
@@ -73,28 +68,5 @@ public class MensaActivity extends ThemedActivity {
         intent.putExtra(MenuActivity.EXTRA_MENSA_URL, selectedMensa.getDetailMenuURL());
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.mensa, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-                return true;
-            case R.id.action_about:
-                DialogFragment aboutDialog = new AboutDialog();
-                aboutDialog.show(getFragmentManager(), ABOUT_DIALOG_TAG);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 }

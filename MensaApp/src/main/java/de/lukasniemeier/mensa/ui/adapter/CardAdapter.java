@@ -6,6 +6,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 
@@ -14,8 +15,10 @@ import com.google.common.collect.Collections2;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import de.lukasniemeier.mensa.R;
@@ -27,6 +30,8 @@ public abstract class CardAdapter<T> extends ArrayAdapter<CardState<T>> {
     private Animator animation;
     private int runningAnimations;
     private Set<T> animationSet;
+    private Map<CardState<T>, ViewHolder<T>> holderMap;
+    private ViewTreeObserver.OnPreDrawListener cardHeightEnsurer;
 
     public CardAdapter(Context context) {
         super(context, 0, new ArrayList<CardState<T>>());
@@ -36,6 +41,8 @@ public abstract class CardAdapter<T> extends ArrayAdapter<CardState<T>> {
         runningAnimations = 0;
         animation = createAddAnimator(context);
         animationSet = new HashSet<T>();
+        holderMap = new HashMap<CardState<T>, ViewHolder<T>>();
+        cardHeightEnsurer = null;
     }
 
     @Override
@@ -87,36 +94,53 @@ public abstract class CardAdapter<T> extends ArrayAdapter<CardState<T>> {
 
     protected abstract View inflateCardContentLayout(LayoutInflater inflater, ViewGroup container);
 
-    protected abstract void initializeView(View view, CardState<T> state, boolean hasBeenTurned);
-
-    private static class ViewHolder<T> {
-        public CardState<T> state;
-        public boolean wasTurned;
-
-        private ViewHolder(CardState<T> state, boolean wasTurned) {
-            this.state = state;
-            this.wasTurned = wasTurned;
-        }
-    }
+    protected abstract void initializeView(View view, T value, boolean isTurned, boolean hasBeenTurned);
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, final ViewGroup parent) {
+
+        if (cardHeightEnsurer == null) {
+            cardHeightEnsurer = new CardHeightChangeNotifier(parent);
+            parent.getViewTreeObserver().addOnPreDrawListener(cardHeightEnsurer);
+        }
+
         CardState<T> object = getItem(position);
         View view = convertView;
+
+        ViewHolder<T> objectHolder = holderMap.get(object);
+        if (objectHolder == null) {
+            holderMap.put(object, new ViewHolder<T>(object, object.isTurned(), parent.getMeasuredWidth()));
+            objectHolder = holderMap.get(object);
+        }
+
         if (view == null) {
             view = inflater.inflate(R.layout.card_layout, parent, false);
-            view.setTag(new ViewHolder<T>(object, object.isTurned()));
+            view.setTag(objectHolder);
             FrameLayout container = (FrameLayout) view.findViewById(R.id.card_container);
             container.addView(inflateCardContentLayout(inflater, container));
         }
 
         boolean hasBeenTurned = false;
-        @SuppressWarnings("unchecked") ViewHolder<T> holder = (ViewHolder<T>) view.getTag();
-        if (holder.state.equals(object)) {
-            hasBeenTurned = holder.wasTurned != object.isTurned();
+        @SuppressWarnings("unchecked") ViewHolder<T> currentHolder = (ViewHolder<T>) view.getTag();
+        if (objectHolder.equals(currentHolder)) {
+            hasBeenTurned = objectHolder.wasTurned != object.isTurned();
         }
-        view.setTag(new ViewHolder<T>(object, object.isTurned()));
-        initializeView(view, object, hasBeenTurned);
+        objectHolder.wasTurned = object.isTurned();
+        view.setTag(objectHolder);
+
+        T value = objectHolder.state.getValue();
+        if (objectHolder.maxHeight == null) {
+            initializeView(view, value, false, false);
+            int frontHeight = measureHeight(view, objectHolder.parentWidth);
+            initializeView(view, value, true, false);
+            int backHeight = measureHeight(view, objectHolder.parentWidth);
+            objectHolder.maxHeight = Math.max(frontHeight, backHeight);
+        }
+        initializeView(view, value, objectHolder.wasTurned, hasBeenTurned);
+
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        layoutParams.height = objectHolder.maxHeight;
+        view.setLayoutParams(layoutParams);
 
         animateAdd(object.getValue(), view);
 
@@ -142,6 +166,58 @@ public abstract class CardAdapter<T> extends ArrayAdapter<CardState<T>> {
             currentAnimation.setTarget(view);
             currentAnimation.start();
             animationSet.remove(object);
+        }
+    }
+
+    private static class ViewHolder<T> {
+        public CardState<T> state;
+        public boolean wasTurned;
+        public int parentWidth;
+        public Integer maxHeight;
+
+        private ViewHolder(CardState<T> state, boolean wasTurned, int parentWidth) {
+            this.state = state;
+            this.wasTurned = wasTurned;
+            this.parentWidth = parentWidth;
+            this.maxHeight = null;
+        }
+    }
+
+    private static int measureHeight(View view, int width) {
+        int measureSpecWidth = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+        int measureSpecHeight = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        view.measure(measureSpecWidth, measureSpecHeight);
+        int result = view.getMeasuredHeight();
+        return result;
+    }
+
+    private class CardHeightChangeNotifier implements ViewTreeObserver.OnPreDrawListener {
+        private final ViewGroup cardContainer;
+
+        private CardHeightChangeNotifier(ViewGroup cardContainer) {
+            this.cardContainer = cardContainer;
+        }
+
+        @Override
+        public boolean onPreDraw() {
+            if (holderMap.isEmpty()) {
+                return true;
+            }
+            boolean parentHeightUpdated = false;
+            int measuredParentWidth = cardContainer.getMeasuredWidth();
+
+            for (ViewHolder<T> holder : holderMap.values()) {
+                if (holder.parentWidth != measuredParentWidth) {
+                    holder.parentWidth = measuredParentWidth;
+                    holder.maxHeight = null;
+                    parentHeightUpdated = true;
+                }
+            }
+            if (parentHeightUpdated) {
+                CardAdapter.this.notifyDataSetChanged();
+                return false;
+            }
+            return true;
         }
     }
 }

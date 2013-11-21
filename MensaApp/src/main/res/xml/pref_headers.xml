@@ -5,8 +5,5 @@
     <header
         android:fragment="de.lukasniemeier.mensa.ui.preference.GeneralPreferenceFragment"
         android:title="@string/pref_header_general" />
-    <header
-        android:fragment="de.lukasniemeier.mensa.ui.preference.PricesPreferenceFragment"
-        android:title="@string/pref_header_prices" />
 
 </preference-headers>

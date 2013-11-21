@@ -2,7 +2,6 @@ package de.lukasniemeier.mensa.ui;
 
 
 import android.app.ActionBar;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -33,13 +32,12 @@ import de.lukasniemeier.mensa.R;
 import de.lukasniemeier.mensa.WeeklyMenuTask;
 import de.lukasniemeier.mensa.model.WeeklyMenu;
 import de.lukasniemeier.mensa.parser.WeeklyMenuParseException;
-import de.lukasniemeier.mensa.ui.preference.SettingsActivity;
 import de.lukasniemeier.mensa.utils.DefaultMensaManager;
 import de.lukasniemeier.mensa.utils.Utils;
 import uk.co.senab.actionbarpulltorefresh.library.DefaultHeaderTransformer;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 
-public class MenuActivity extends ThemedActivity implements
+public class MenuActivity extends BaseActivity implements
         ActionBar.OnNavigationListener,
         MenuViewFragment.RefreshViewListener,
         MenuViewSpecialFragment.RefreshListener {
@@ -99,6 +97,12 @@ public class MenuActivity extends ThemedActivity implements
         setupBottomBar();
     }
 
+
+
+    private static String getMensaShortName(MenuActivity activity) {
+        return activity.getIntent().getStringExtra(MenuActivity.EXTRA_MENSA_SHORTNAME);
+    }
+
     private void setupBottomBar() {
         bottomBar = findViewById(R.id.menu_bottom_bar);
         Button cancelButton = (Button) bottomBar.findViewById(R.id.menu_bottom_bar_cancel);
@@ -108,17 +112,17 @@ public class MenuActivity extends ThemedActivity implements
                 bottomBar.setVisibility(View.GONE);
             }
         });
+        final String mensaShortName = getMensaShortName(this);
         Button defaultButton = (Button) bottomBar.findViewById(R.id.menu_bottom_bar_default);
-        defaultButton.setText(
-                String.format(getString(R.string.bottom_bar_make_default), getIntent().getStringExtra(EXTRA_MENSA_SHORTNAME)));
+        defaultButton.setText(String.format(getString(R.string.bottom_bar_make_default), mensaShortName));
         defaultButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DefaultMensaManager(getApplicationContext()).markAsDefault(MenuActivity.this);
+                new DefaultMensaManager(getApplicationContext()).markAsDefault(mensaShortName);
                 bottomBar.setVisibility(View.GONE);
                 Toast.makeText(
                         getApplicationContext(),
-                        String.format("'%1$s marked as default.", getIntent().getStringExtra(EXTRA_MENSA_SHORTNAME)),
+                        String.format(getString(R.string.mensa_marked_as_default), mensaShortName),
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -170,7 +174,9 @@ public class MenuActivity extends ThemedActivity implements
                     Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
                 }
             }
-        }).execute("http://www.studentenwerk-potsdam.de/speiseplan.html", mensaURL.toString());
+        }).execute(
+                "http://www.studentenwerk-potsdam.de/speiseplan.html",
+                mensaURL.toString());
     }
 
     private void checkForDefaultMensa() {
@@ -195,7 +201,7 @@ public class MenuActivity extends ThemedActivity implements
             navigationMap.put(index++, today);
             labels.add(getString(R.string.today));
             // Since there is no 'today' we preselect tomorrow
-            if (selectedDateIndex == 0) {
+            if (selectedDateIndex == 0 && !weeklyMenu.getMenus().isEmpty()) {
                 selectedDateIndex++;
             }
         }
@@ -234,12 +240,6 @@ public class MenuActivity extends ThemedActivity implements
                 getActionBar().getSelectedNavigationIndex());
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
     private void navigateToMensaActivity() {
         Intent intent = NavUtils.getParentActivityIntent(this);
         intent.putExtra(MensaActivity.EXTRA_NO_DEFAULT_REDIRECT, true);
@@ -252,6 +252,12 @@ public class MenuActivity extends ThemedActivity implements
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -260,16 +266,9 @@ public class MenuActivity extends ThemedActivity implements
             case R.id.action_refresh:
                 refresh();
                 return true;
-            case R.id.action_settings:
-                Intent settingsIntent = new Intent(this, SettingsActivity.class);
-                startActivity(settingsIntent);
-                return true;
-            case R.id.action_about:
-                DialogFragment aboutDialog = new AboutDialog();
-                aboutDialog.show(getFragmentManager(), ABOUT_DIALOG_TAG);
-                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

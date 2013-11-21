@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Kathi\'s Mensa App</string>
+    <string name="app_name">Mensa App</string>
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_about">About</string>
@@ -23,7 +23,7 @@
     <string name="title_activity_settings">Settings</string>
     <string name="pref_header_general">General</string>
     <string name="pref_title_select_mensa_default">Select default mensa</string>
-    <string name="pref_title_enable_mensa_default">Activate feature \'default mensa\'</string>
+    <string name="pref_title_enable_mensa_default">Activate \'default mensa\'</string>
     <string name="pref_none_select_mensa_default">None</string>
     <string name="pref_header_prices">Prices</string>
     <string name="pref_title_enable_show_prices">Show prices</string>
@@ -60,5 +60,7 @@
     <string name="pref_title_select_theme">Select Theme</string>
     <string name="mensa_opening_times">Opening Times</string>
     <string name="mensa_address">Address</string>
+    <string name="mensa_marked_as_default">\'%1$s marked as default.</string>
+    <string name="price_template">%1$s €</string>
 
 </resources>

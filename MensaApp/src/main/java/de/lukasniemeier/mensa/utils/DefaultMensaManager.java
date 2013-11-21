@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import de.lukasniemeier.mensa.ui.MenuActivity;
-
 /**
  * Created on 18.09.13.
  */
@@ -25,13 +23,8 @@ public class DefaultMensaManager {
                 sharedPreferences.getString(SETTINGS_LIST_MENSA_DEFAULT, "").isEmpty();
     }
 
-    public void markAsDefault(MenuActivity menuActivity) {
-        String mensaShortName = getMensaShortName(menuActivity);
+    public void markAsDefault(String mensaShortName) {
         sharedPreferences.edit().putString(SETTINGS_LIST_MENSA_DEFAULT, mensaShortName).commit();
-    }
-
-    private String getMensaShortName(MenuActivity menuActivity) {
-        return menuActivity.getIntent().getStringExtra(MenuActivity.EXTRA_MENSA_SHORTNAME);
     }
 
     public boolean hasDefault() {

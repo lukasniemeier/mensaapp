@@ -6,10 +6,16 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import de.lukasniemeier.mensa.R;
 import de.lukasniemeier.mensa.model.Menu;
 import de.lukasniemeier.mensa.utils.Utils;
 
@@ -18,10 +24,19 @@ import de.lukasniemeier.mensa.utils.Utils;
  */
 public class TodaysMenuParser extends WeeklyMenuParser {
 
-    private static final DateFormat menuDateFormat = new SimpleDateFormat("c, d. MMMM yyyy");
+    private static final String priceGroup = "Studierende";
+
+    private final Map<String, Collection<String>> alternativeNameMap;
 
     public TodaysMenuParser(Context context, Document page) {
         super(context, page);
+        alternativeNameMap = new HashMap<String, Collection<String>>();
+        alternativeNameMap.put("Veganes Angebot", Arrays.asList("Veganes Essen"));
+    }
+
+    @Override
+    protected Date parseDate(Element menuTable) {
+        return Utils.today();
     }
 
     @Override
@@ -29,19 +44,75 @@ public class TodaysMenuParser extends WeeklyMenuParser {
         Menu menu = new Menu();
 
         Elements rows = menuTable.select("tr");
-        int mealCount = rows.get(0).children().size();
-        for (int i = 0; i < mealCount; i++) {
-            addMeal(menu,
-                    rows.get(0).children().get(i).text(),
-                    rows.get(1).children().get(i).text(),
-                    parseMealTypes(rows.get(2).children().get(i)));
+
+        for (Element nameElement : rows.select("td.head")) {
+            int index = nameElement.parent().children().indexOf(nameElement);
+
+            Element nextParent = nameElement.parent().nextElementSibling();
+            if (nextParent == null) {
+                throw new WeeklyMenuParseException("Expected parent for description");
+            }
+
+            Element nextNextParent = nextParent.nextElementSibling();
+            if (nextParent == null) {
+                throw new WeeklyMenuParseException("Expected description and meal type elements");
+            }
+
+            Element descriptionElement = getChild(index, nextParent);
+            Element mealTypesElement = getChild(index, nextNextParent);
+
+            String name = nameElement.text();
+            String price = getPrice(menuTable.ownerDocument(), name);
+
+            addMeal(menu, nameElement.text(), descriptionElement.text(), parseMealTypes(mealTypesElement), price);
         }
         return menu;
     }
 
-    @Override
-    protected Date parseDate(Element menuTable) {
-        return Utils.today();
+    private String getPrice(Document document, String name) {
+        String price = null;
+        for (String alternativeName : getAlternativeNames(name)) {
+            price = findPriceInDocument(document, alternativeName);
+            if (price != null) {
+                break;
+            }
+        }
+        if (price == null) {
+            price = getDefaultPrice(name);
+        }
+        return context.getString(R.string.price_template, price);
+    }
+
+    private Collection<String> getAlternativeNames(String name) {
+        Collection<String> names = alternativeNameMap.get(name);
+        if (names == null) {
+            names = new ArrayList<String>(1);
+        } else {
+            names = new ArrayList<String>(names);
+        }
+        // always add original name
+        names.add(name);
+        return names;
+    }
+
+    private String findPriceInDocument(Document document, String name) {
+        String paragraphRegex = String.format("%s.*" + priceGroup + ":", name);
+        Elements priceElements = document.select("p:matches(" + paragraphRegex + ")");
+        if (priceElements.size() == 1) {
+            Pattern priceRegex = Pattern.compile(name + ".*?" + priceGroup + ": (\\d+,\\d+)", Pattern.DOTALL);
+            Matcher match = priceRegex.matcher(priceElements.get(0).text());
+            if (match.find()) {
+                return match.group(1);
+            }
+        }
+        return null;
+    }
+
+    private Element getChild(int index, Element parent) throws WeeklyMenuParseException {
+        if (parent.children().size() <= index) {
+            throw new WeeklyMenuParseException("Expected element for description or meal types");
+        }
+        return parent.child(index);
     }
 
 }

@@ -26,7 +26,7 @@ import de.lukasniemeier.mensa.utils.Utils;
  */
 public abstract class WeeklyMenuParser {
 
-    public static final String SPECIAL_MEAL_NUDEL = "Nudeltheke";
+    public static final String SPECIAL_MEAL_NOODLE = "Nudeltheke";
 
     public static String mapAdditive(Context context, String additiveKey) {
         String[] additiveNames = context.getResources().getStringArray(R.array.meal_additives_name_map);
@@ -69,13 +69,32 @@ public abstract class WeeklyMenuParser {
         return weeklyMenu;
     }
 
+    protected String getDefaultPrice(String mealName) {
+        if (mealName.equals("Angebot 1")) {
+           return "1,40";
+        } else if (mealName.equals("Angebot 2")) {
+            return "2,00";
+        } else if (mealName.equals("Angebot 3")) {
+            return "2,50";
+        } else if (mealName.equals("Alternativ-Angebot")) {
+            return "2,50";
+        }
+        return "?,??";
+    }
+
     protected void addMeal(Menu menu, String name, String description, Collection<MealType> types) {
-        if (name.startsWith(SPECIAL_MEAL_NUDEL) && description.isEmpty()) {
+        addMeal(menu, name, description, types,
+                context.getString(R.string.price_template, getDefaultPrice(name)));
+    }
+
+    protected void addMeal(Menu menu, String name, String description, Collection<MealType> types,
+                           String price) {
+        if (name.startsWith(SPECIAL_MEAL_NOODLE) && description.isEmpty()) {
             menu.add(new Meal(name, context.getString(R.string.noodle_description),
-                    types, parseAdditives(description)));
+                    types, parseAdditives(description), price));
         } else if (!description.isEmpty()) {
             menu.add(new Meal(name, stripAdditives(description),
-                    types, parseAdditives(description)));
+                    types, parseAdditives(description), price));
         }
     }
 
