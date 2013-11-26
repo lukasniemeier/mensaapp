@@ -5,22 +5,21 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.format.DateUtils;
 import android.widget.ArrayAdapter;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import de.lukasniemeier.mensa.R;
 import de.lukasniemeier.mensa.model.WeeklyMenu;
 import de.lukasniemeier.mensa.ui.MenuViewEmptyFragment;
 import de.lukasniemeier.mensa.ui.MenuViewErrorFragment;
 import de.lukasniemeier.mensa.ui.MenuViewFragment;
+import de.lukasniemeier.mensa.utils.SerializableTime;
 import de.lukasniemeier.mensa.utils.Utils;
 
 /**
@@ -30,8 +29,6 @@ import de.lukasniemeier.mensa.utils.Utils;
 
 public class NavigationAdapterMenuState extends NavigationAdapterState implements
         ActionBar.OnNavigationListener {
-
-    private static final DateFormat menuDateFormat = new SimpleDateFormat("c, d.MM");
 
     private final WeeklyMenu weeklyMenu;
     private final Map<Integer, Fragment> navigationMap;
@@ -46,7 +43,7 @@ public class NavigationAdapterMenuState extends NavigationAdapterState implement
     }
 
     private void initializeNavigation(int selectedDateIndex) {
-        Date today = Utils.today();
+        SerializableTime today = Utils.today();
         int index = 0;
 
         List<String> labels = new ArrayList<String>();
@@ -60,15 +57,10 @@ public class NavigationAdapterMenuState extends NavigationAdapterState implement
             }
         }
 
-        for (Date date : weeklyMenu.getMenus().keySet()) {
+        SortedSet<SerializableTime> dates = new TreeSet<SerializableTime>(weeklyMenu.getMenus().keySet());
+        for (SerializableTime date : dates) {
             navigationMap.put(index++, MenuViewFragment.create(weeklyMenu.getMenu(date)));
-            if (DateUtils.isToday(date.getTime())) {
-                labels.add(context.getString(R.string.today));
-            } else if(DateUtils.isToday(date.getTime() - 1000 * 60 * 60 * 24)) {
-                labels.add(context.getString(R.string.tomorrow));
-            } else {
-                labels.add(menuDateFormat.format(date));
-            }
+            labels.add(Utils.formatDate(context, date));
         }
 
         ActionBar actionBar = stateContext.getActionBar();
@@ -137,7 +129,14 @@ public class NavigationAdapterMenuState extends NavigationAdapterState implement
 
         @Override
         public void onPageSelected(int position) {
-                stateContext.getActionBar().setSelectedNavigationItem(position);
+            stateContext.getActionBar().setSelectedNavigationItem(position);
+
+            for (int i = 0; i < getCount(); i++) {
+                Fragment hiddenFragment = getItem(i);
+                if (hiddenFragment instanceof OnPageChangeListener) {
+                    ((OnPageChangeListener)hiddenFragment).onPageChange(i == position);
+                }
+            }
         }
 
         @Override

@@ -11,6 +11,7 @@ import org.jsoup.nodes.Document;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.lukasniemeier.mensa.model.Mensa;
 import de.lukasniemeier.mensa.model.WeeklyMenu;
 import de.lukasniemeier.mensa.parser.WeeklyMenuParseException;
 import de.lukasniemeier.mensa.parser.WeeklyMenuParser;
@@ -28,10 +29,12 @@ public class WeeklyMenuTask extends AsyncTask<String, Integer, Pair<WeeklyMenu, 
 
     private final Context context;
     private final WeeklyMenuReceiver receiver;
+    private final Mensa mensa;
 
-    public WeeklyMenuTask(Context context, WeeklyMenuReceiver receiver) {
+    public WeeklyMenuTask(Mensa mensa, Context context, WeeklyMenuReceiver receiver) {
         this.context = context;
         this.receiver = receiver;
+        this.mensa = mensa;
     }
 
     @Override
@@ -40,7 +43,7 @@ public class WeeklyMenuTask extends AsyncTask<String, Integer, Pair<WeeklyMenu, 
         for (String url : urls) {
             try {
                 Document document = Jsoup.connect(url).get();
-                WeeklyMenuParser parser = WeeklyMenuParser.create(context, document);
+                WeeklyMenuParser parser = WeeklyMenuParser.create(context, document, mensa);
                 menus.add(parser.parse());
             } catch (WeeklyMenuParseException wmpe) {
                 Log.w(TAG, String.format(context.getString(R.string.error_menu_parse), url), wmpe);
@@ -51,7 +54,7 @@ public class WeeklyMenuTask extends AsyncTask<String, Integer, Pair<WeeklyMenu, 
             }
         }
 
-        return new Pair<WeeklyMenu, Exception>(WeeklyMenu.merge(Utils.now(), menus), null);
+        return new Pair<WeeklyMenu, Exception>(WeeklyMenu.merge(mensa, Utils.now(), menus), null);
     }
 
     @Override

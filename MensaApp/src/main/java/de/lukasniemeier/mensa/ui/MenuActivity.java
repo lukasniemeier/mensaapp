@@ -2,6 +2,7 @@ package de.lukasniemeier.mensa.ui;
 
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -17,10 +18,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.net.URL;
 
 import de.lukasniemeier.mensa.R;
 import de.lukasniemeier.mensa.WeeklyMenuTask;
+import de.lukasniemeier.mensa.model.Mensa;
 import de.lukasniemeier.mensa.model.WeeklyMenu;
 import de.lukasniemeier.mensa.parser.WeeklyMenuParseException;
 import de.lukasniemeier.mensa.ui.adapter.NavigationAdapter;
@@ -34,16 +35,19 @@ public class MenuActivity extends BaseActivity implements
 
     private static final String TAG = MenuActivity.class.getSimpleName();
 
-    public static final String EXTRA_MENSA_NAME = "EXTRA_MENSA_NAME";
-    public static final String EXTRA_MENSA_SHORTNAME = "EXTRA_MENSA_SHORTNAME";
-    public static final String EXTRA_MENSA_URL = "EXTRA_MENSA_URL";
+    public static Intent createIntent(Context context, Mensa mensa) {
+        Intent intent = new Intent(context, MenuActivity.class);
+        intent.putExtra(MenuActivity.EXTRA_MENSA_SHORTNAME, mensa.getShortName());
+        return intent;
+    }
 
+    private static final String EXTRA_MENSA_SHORTNAME = "EXTRA_MENSA_SHORTNAME";
     private static final String STATE_WEEKLY_MENU = "weekly_menu";
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 
-    private URL mensaURL;
-
+    private Mensa mensa;
     private WeeklyMenu weeklyMenu;
+
     private ViewPager viewPager;
     private NavigationAdapter viewPagerAdapter;
 
@@ -56,11 +60,14 @@ public class MenuActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
+        String shortName = getIntent().getStringExtra(MenuActivity.EXTRA_MENSA_SHORTNAME);
+        mensa = Mensa.getMensa(shortName);
+
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
-        setTitle(getIntent().getStringExtra(EXTRA_MENSA_SHORTNAME));
+        setTitle(mensa.getShortName());
 
         viewPager = (ViewPager) findViewById(R.id.container);
         viewPagerAdapter = new NavigationAdapter(viewPager, this, actionBar, getSupportFragmentManager());
@@ -69,15 +76,15 @@ public class MenuActivity extends BaseActivity implements
         ((DefaultHeaderTransformer)refresher.getHeaderTransformer()).setProgressBarColor(
                 ThemeHelper.getRefreshBarColor(this));
 
-        mensaURL = (URL) getIntent().getSerializableExtra(EXTRA_MENSA_URL);
-
         int selectedDateIndex = 0;
-        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
-            selectedDateIndex = savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM);
-        }
-
-        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_WEEKLY_MENU)) {
-            weeklyMenu = (WeeklyMenu) savedInstanceState.getSerializable(STATE_WEEKLY_MENU);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
+                selectedDateIndex = savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM);
+            }
+            if (savedInstanceState.containsKey(STATE_WEEKLY_MENU)) {
+                weeklyMenu = (WeeklyMenu) savedInstanceState.getSerializable(STATE_WEEKLY_MENU);
+                Log.i(TAG, "Restored WeeklyMenu from state.");
+            }
         }
 
         if (weeklyMenu != null && !weeklyMenu.isOutdated()) {
@@ -95,10 +102,6 @@ public class MenuActivity extends BaseActivity implements
         }
     }
 
-    private static String getMensaShortName(MenuActivity activity) {
-        return activity.getIntent().getStringExtra(MenuActivity.EXTRA_MENSA_SHORTNAME);
-    }
-
     private void setupBottomBar() {
         bottomBar = findViewById(R.id.menu_bottom_bar);
         Button cancelButton = (Button) bottomBar.findViewById(R.id.menu_bottom_bar_cancel);
@@ -108,7 +111,7 @@ public class MenuActivity extends BaseActivity implements
                 bottomBar.setVisibility(View.GONE);
             }
         });
-        final String mensaShortName = getMensaShortName(this);
+        final String mensaShortName = mensa.getShortName();
         Button defaultButton = (Button) bottomBar.findViewById(R.id.menu_bottom_bar_default);
         defaultButton.setText(String.format(getString(R.string.bottom_bar_make_default), mensaShortName));
         defaultButton.setOnClickListener(new View.OnClickListener() {
@@ -131,15 +134,14 @@ public class MenuActivity extends BaseActivity implements
             refreshMenuItem.setEnabled(false);
         }
 
-
-        new WeeklyMenuTask(getApplicationContext(), new WeeklyMenuTask.WeeklyMenuReceiver() {
+        new WeeklyMenuTask(mensa, getApplicationContext(), new WeeklyMenuTask.WeeklyMenuReceiver() {
             @Override
             public void onWeeklyMenuSuccess(WeeklyMenu newWeeklyMenu) {
                 refresher.setRefreshComplete();
                 if (refreshMenuItem != null) {
                     refreshMenuItem.setEnabled(true);
                 }
-                Log.i(TAG, "Refresh complete (success)");
+                Log.i(TAG, "Refresh succeed)");
 
                 weeklyMenu = newWeeklyMenu;
                 viewPagerAdapter.displayMenu(weeklyMenu, 0);
@@ -152,14 +154,14 @@ public class MenuActivity extends BaseActivity implements
                 if (refreshMenuItem != null) {
                     refreshMenuItem.setEnabled(true);
                 }
-                Log.i(TAG, "Refresh complete (failed)");
+                Log.i(TAG, "Refresh failed");
 
                 String errorMessage = getErrorMessage(error);
-                //if (weeklyMenu == null) {
+                if (weeklyMenu == null) {
                     viewPagerAdapter.displayError(errorMessage);
-                //} else {
+                } else {
                     Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
-                //}
+                }
             }
 
             private String getErrorMessage(Exception error) {
@@ -175,7 +177,7 @@ public class MenuActivity extends BaseActivity implements
             }
         }).execute(
                 "http://www.studentenwerk-potsdam.de/speiseplan.html",
-                mensaURL.toString());
+                mensa.getDetailMenuURL().toString());
     }
 
     private void checkForDefaultMensa() {

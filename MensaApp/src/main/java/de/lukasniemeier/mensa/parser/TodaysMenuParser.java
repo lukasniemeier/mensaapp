@@ -9,14 +9,16 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.lukasniemeier.mensa.R;
+import de.lukasniemeier.mensa.model.Mensa;
 import de.lukasniemeier.mensa.model.Menu;
+import de.lukasniemeier.mensa.model.WeeklyMenu;
+import de.lukasniemeier.mensa.utils.SerializableTime;
 import de.lukasniemeier.mensa.utils.Utils;
 
 /**
@@ -28,20 +30,20 @@ public class TodaysMenuParser extends WeeklyMenuParser {
 
     private final Map<String, Collection<String>> alternativeNameMap;
 
-    public TodaysMenuParser(Context context, Document page) {
-        super(context, page);
+    public TodaysMenuParser(Context context, Document page, Mensa mensa) {
+        super(context, page, mensa);
         alternativeNameMap = new HashMap<String, Collection<String>>();
         alternativeNameMap.put("Veganes Angebot", Arrays.asList("Veganes Essen"));
     }
 
     @Override
-    protected Date parseDate(Element menuTable) {
+    protected SerializableTime parseDate(Element menuTable) {
         return Utils.today();
     }
 
     @Override
-    protected Menu parseMenu(Element menuTable) throws WeeklyMenuParseException {
-        Menu menu = new Menu();
+    protected Menu parseMenu(WeeklyMenu weeklyMenu, Element menuTable) throws WeeklyMenuParseException {
+        Menu menu = new Menu(weeklyMenu);
 
         Elements rows = menuTable.select("tr");
 

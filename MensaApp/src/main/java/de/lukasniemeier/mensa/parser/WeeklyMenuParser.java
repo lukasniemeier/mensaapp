@@ -8,7 +8,6 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -17,8 +16,10 @@ import java.util.regex.Pattern;
 import de.lukasniemeier.mensa.R;
 import de.lukasniemeier.mensa.model.Meal;
 import de.lukasniemeier.mensa.model.MealType;
+import de.lukasniemeier.mensa.model.Mensa;
 import de.lukasniemeier.mensa.model.Menu;
 import de.lukasniemeier.mensa.model.WeeklyMenu;
+import de.lukasniemeier.mensa.utils.SerializableTime;
 import de.lukasniemeier.mensa.utils.Utils;
 
 /**
@@ -41,28 +42,31 @@ public abstract class WeeklyMenuParser {
         }
     }
 
-    public static WeeklyMenuParser create(Context context, Document page) {
+    public static WeeklyMenuParser create(Context context, Document page, Mensa mensa) {
         if (page.select(".bill_of_fare").size() == 1) {
-            return new TodaysMenuParser(context, page);
+            return new TodaysMenuParser(context, page, mensa);
+        } else {
+            return new PreviewMenuParser(context, page, mensa);
         }
-        return new PreviewMenuParser(context, page);
     }
 
     protected final Context context;
     protected final Document document;
+    private final Mensa mensa;
 
-    public WeeklyMenuParser(Context context, Document page) {
+    public WeeklyMenuParser(Context context, Document page, Mensa mensa) {
         this.context = context;
         this.document = page;
+        this.mensa = mensa;
     }
 
     public WeeklyMenu parse() throws WeeklyMenuParseException {
-        WeeklyMenu weeklyMenu = new WeeklyMenu(Utils.now());
+        WeeklyMenu weeklyMenu = new WeeklyMenu(mensa, Utils.now());
 
         Elements menuTables = document.select(".bill_of_fare");
         for (Element menuTable : menuTables) {
-            Date date = parseDate(menuTable);
-            Menu menu = parseMenu(menuTable);
+            SerializableTime date = parseDate(menuTable);
+            Menu menu = parseMenu(weeklyMenu, menuTable);
 
             weeklyMenu.addMenu(date, menu);
         }
@@ -84,19 +88,14 @@ public abstract class WeeklyMenuParser {
         return "?,??";
     }
 
-    protected void addMeal(Menu menu, String name, String description, Collection<MealType> types) {
-        addMeal(menu, name, description, types,
-                context.getString(R.string.price_template, getDefaultPrice(name)));
-    }
-
     protected void addMeal(Menu menu, String name, String description, Collection<MealType> types,
                            String price) {
-        if (name.startsWith(SPECIAL_MEAL_NOODLE) && description.isEmpty()) {
-            menu.add(new Meal(name, context.getString(R.string.noodle_description),
-                    types, parseAdditives(description), price));
-        } else if (!description.isEmpty()) {
-            menu.add(new Meal(name, stripAdditives(description),
-                    types, parseAdditives(description), price));
+        String parsedDescription = stripAdditives(description);
+        if (name.startsWith(SPECIAL_MEAL_NOODLE) && parsedDescription.isEmpty()) {
+            parsedDescription = context.getString(R.string.noodle_description);
+        }
+        if (!parsedDescription.isEmpty()) {
+            menu.add(new Meal(menu, name, parsedDescription, types, parseAdditives(description), price));
         }
     }
 
@@ -126,8 +125,8 @@ public abstract class WeeklyMenuParser {
         return types;
     }
 
-    protected abstract Menu parseMenu(Element menuTable) throws WeeklyMenuParseException ;
+    protected abstract Menu parseMenu(WeeklyMenu weeklyMenu, Element menuTable) throws WeeklyMenuParseException ;
 
-    protected abstract Date parseDate(Element menuTable) throws WeeklyMenuParseException ;
+    protected abstract SerializableTime parseDate(Element menuTable) throws WeeklyMenuParseException ;
 
 }

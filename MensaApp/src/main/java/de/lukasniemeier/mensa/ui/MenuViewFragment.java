@@ -16,11 +16,12 @@ import de.lukasniemeier.mensa.R;
 import de.lukasniemeier.mensa.model.Menu;
 import de.lukasniemeier.mensa.ui.adapter.CardState;
 import de.lukasniemeier.mensa.ui.adapter.MealAdapter;
+import de.lukasniemeier.mensa.ui.adapter.OnPageChangeListener;
 
 /**
  * Created on 17.09.13.
  */
-public class MenuViewFragment extends Fragment {
+public class MenuViewFragment extends Fragment implements OnPageChangeListener {
 
     public static MenuViewFragment create(Menu menu) {
         MenuViewFragment fragment = new MenuViewFragment();
@@ -41,10 +42,7 @@ public class MenuViewFragment extends Fragment {
 
     private RefreshViewListener listener;
     private GridView gridView;
-
-    public MenuViewFragment() {
-        // nothing yet.
-    }
+    private MealContextHandler mealContextHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,6 +69,8 @@ public class MenuViewFragment extends Fragment {
         Menu menu = (Menu) getArguments().getSerializable(ARG_MENU);
 
         final MealAdapter adapter = new MealAdapter(getActivity());
+        mealContextHandler = new MealContextHandler(getActivity(), adapter);
+
         gridView = (GridView) getView().findViewById(R.id.fragment_menu_view);
         gridView.setAdapter(adapter);
         adapter.addAll(menu.getMeals(), false);
@@ -86,6 +86,8 @@ public class MenuViewFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(final AdapterView<?> adapterView, final View view, final int i, long l) {
+                // pass through MealContextHandler
+                mealContextHandler.onItemClick(adapterView, view, i, l);
                 gridView.setEnabled(false);
                 final CardState<?> state = (CardState<?>) adapterView.getItemAtPosition(i);
                 first.setTarget(view);
@@ -102,8 +104,7 @@ public class MenuViewFragment extends Fragment {
                 first.start();
             }
         });
-
-
+        gridView.setOnItemLongClickListener(mealContextHandler);
     }
 
     @Override
@@ -115,12 +116,14 @@ public class MenuViewFragment extends Fragment {
     @Override
     public void onPause() {
         listener.removeRefreshableView(gridView);
+        mealContextHandler.finish();
         super.onPause();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean("EXTRA_MARKER", true);
+    public void onPageChange(boolean isShown) {
+        if (mealContextHandler != null) {
+            mealContextHandler.onPageChange(isShown);
+        }
     }
 }

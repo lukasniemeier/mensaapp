@@ -9,12 +9,14 @@ import org.jsoup.select.Elements;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.lukasniemeier.mensa.model.Mensa;
 import de.lukasniemeier.mensa.model.Menu;
+import de.lukasniemeier.mensa.model.WeeklyMenu;
+import de.lukasniemeier.mensa.utils.SerializableTime;
 
 /**
  * Created on 17.09.13.
@@ -25,26 +27,28 @@ public class PreviewMenuParser extends WeeklyMenuParser {
             Locale.GERMANY);
     private static final Pattern menuDatePattern = Pattern.compile("[a-zA-Z]{2},\\s(.*)$");
 
-    public PreviewMenuParser(Context context, Document page) {
-        super(context, page);
+    public PreviewMenuParser(Context context, Document page, Mensa mensa) {
+        super(context, page, mensa);
     }
 
     @Override
-    protected Menu parseMenu(Element menuTable) {
-        Menu menu = new Menu();
+    protected Menu parseMenu(WeeklyMenu weeklyMenu, Element menuTable) {
+        Menu menu = new Menu(weeklyMenu);
 
         Elements rows = menuTable.select("tr");
         for (int i = 0; i < 4; i++) {
+            String name = rows.get(1).children().get(i).text();
             addMeal(menu,
-                    rows.get(1).children().get(i).text(),
+                    name,
                     rows.get(2).children().get(i).text(),
-                    parseMealTypes(rows.get(3).children().get(i)));
+                    parseMealTypes(rows.get(3).children().get(i)),
+                    getDefaultPrice(name));
         }
         return menu;
     }
 
     @Override
-    protected Date parseDate(Element menuTable) throws WeeklyMenuParseException {
+    protected SerializableTime parseDate(Element menuTable) throws WeeklyMenuParseException {
         Elements elements = menuTable.select(".date");
         if (elements.size() != 1) {
             throw new WeeklyMenuParseException("No date field found");
@@ -55,7 +59,7 @@ public class PreviewMenuParser extends WeeklyMenuParser {
 
             Matcher match = menuDatePattern.matcher(dateText);
             if (match.matches()) {
-                return menuDateFormat.parse(match.group(1));
+                return new SerializableTime(menuDateFormat.parse(match.group(1)));
             }
             throw new WeeklyMenuParseException("Error finding date in date field");
         } catch (ParseException e) {

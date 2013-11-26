@@ -8,19 +8,25 @@ import java.util.Collection;
  */
 public class Meal implements Serializable {
 
+    private final Menu menu;
     private final String name;
     private final String description;
     private final Collection<MealType> types;
     private final Collection<String> additives;
     private final String price;
 
-    public Meal(String name, String description, Collection<MealType> types,
+    public Meal(Menu menu, String name, String description, Collection<MealType> types,
                 Collection<String> additives, String price) {
+        this.menu = menu;
         this.name = name;
         this.description = description;
         this.types = types;
         this.additives = additives;
         this.price = price;
+    }
+
+    public Menu getMenu() {
+        return menu;
     }
 
     public String getName() {

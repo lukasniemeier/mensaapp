@@ -2,13 +2,14 @@ package de.lukasniemeier.mensa.model;
 
 import android.text.format.Time;
 
-import java.io.IOException;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
+import de.lukasniemeier.mensa.utils.SerializableTime;
 import de.lukasniemeier.mensa.utils.Utils;
 
 /**
@@ -16,34 +17,44 @@ import de.lukasniemeier.mensa.utils.Utils;
  */
 public class WeeklyMenu implements Serializable {
 
-    private Time timestamp;
-    private TreeMap<Date, Menu> menuMap;
+    private final Mensa mensa;
+    private SerializableTime timestamp;
+    private BiMap<SerializableTime, Menu> menuMap;
 
-    public WeeklyMenu(Time timestamp) {
+    public WeeklyMenu(Mensa mensa, SerializableTime timestamp) {
+        this.mensa = mensa;
         this.timestamp = timestamp;
-        this.menuMap = new TreeMap<Date, Menu>();
+        this.menuMap = HashBiMap.create();
     }
 
-    public void addMenu(Date date, Menu menu) {
-        menuMap.put(date, menu);
+    public Mensa getMensa() {
+        return mensa;
     }
 
-    public TreeMap<Date, Menu> getMenus() {
+    public Time getTimestamp() {
+        return timestamp.getTime();
+    }
+
+    public BiMap<SerializableTime, Menu> getMenus() {
         return menuMap;
     }
 
-    public Menu getMenu(Date date) {
+    public void addMenu(SerializableTime date, Menu menu) {
+        menuMap.put(date, menu);
+    }
+
+    public Menu getMenu(SerializableTime date) {
         return menuMap.get(date);
     }
 
-    public boolean hasMenu(Date date) {
+    public boolean hasMenu(SerializableTime date) {
         return menuMap.containsKey(date);
     }
 
-    public static WeeklyMenu merge(Time timestamp, List<WeeklyMenu> menus) {
-        WeeklyMenu merged = new WeeklyMenu(timestamp);
+    public static WeeklyMenu merge(Mensa mensa, SerializableTime timestamp, List<WeeklyMenu> menus) {
+        WeeklyMenu merged = new WeeklyMenu(mensa, timestamp);
         for (WeeklyMenu weeklyMenu : menus) {
-            for (Map.Entry<Date, Menu> entry : weeklyMenu.menuMap.entrySet()) {
+            for (Map.Entry<SerializableTime, Menu> entry : weeklyMenu.menuMap.entrySet()) {
                 merged.addMenu(entry.getKey(), entry.getValue());
             }
         }
@@ -51,22 +62,7 @@ public class WeeklyMenu implements Serializable {
     }
 
     public boolean isOutdated() {
-        Time now = Utils.now();
-        return now.yearDay > timestamp.yearDay || now.year > timestamp.year;
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out)
-            throws IOException {
-        out.writeObject(menuMap);
-        out.writeObject(timestamp.toMillis(false));
-    }
-
-    @SuppressWarnings("unchecked")
-    private void readObject(java.io.ObjectInputStream in)
-        throws IOException, ClassNotFoundException {
-        this.menuMap = (TreeMap<Date, Menu>) in.readObject();
-        long ms = (Long) in.readObject();
-        this.timestamp = new Time();
-        this.timestamp.set(ms);
+        SerializableTime now = Utils.now();
+        return now.getYearDay() > timestamp.getYearDay() || now.getYear() > timestamp.getYear();
     }
 }

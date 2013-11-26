@@ -2,6 +2,11 @@ package de.lukasniemeier.mensa.model;
 
 import android.text.format.Time;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -13,9 +18,18 @@ import de.lukasniemeier.mensa.utils.Utils;
 /**
  * Created on 17.09.13.
  */
-public class Mensa {
+public class Mensa implements Serializable {
 
-    public static List<Mensa> database;
+    private static List<Mensa> database = null;
+
+    public static Mensa getMensa(final String shortName) {
+        return Iterables.find(getMensas(), new Predicate<Mensa>() {
+            @Override
+            public boolean apply(Mensa mensa) {
+                return mensa.getShortName().equals(shortName);
+            }
+        });
+    }
 
     public static List<Mensa> getMensas() {
         if (database == null) {
@@ -98,7 +112,7 @@ public class Mensa {
     }
 
     public String getOpeningTimes() {
-        Time now = Utils.now();
+        Time now = Utils.now().getTime();
 
         Time startWinterTerm = new Time(now);
         startWinterTerm.month = 9;
@@ -138,5 +152,9 @@ public class Mensa {
                 ", openingTimes='" + openingTimes + '\'' +
                 ", detailMenuURL=" + detailMenuURL +
                 '}';
+    }
+
+    private Object readResolve() throws ObjectStreamException {
+        return getMensa(this.shortName);
     }
 }

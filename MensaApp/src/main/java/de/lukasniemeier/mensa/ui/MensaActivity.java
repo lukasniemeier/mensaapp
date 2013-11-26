@@ -6,8 +6,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import java.util.Collection;
-
 import de.lukasniemeier.mensa.R;
 import de.lukasniemeier.mensa.model.Mensa;
 import de.lukasniemeier.mensa.ui.adapter.CardState;
@@ -21,7 +19,7 @@ public class MensaActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        redirectOnDefaultMensa(Mensa.getMensas());
+        redirectOnDefaultMensa();
 
         setContentView(R.layout.activity_mensa);
         boolean isFirstStart = savedInstanceState == null;
@@ -43,7 +41,7 @@ public class MensaActivity extends BaseActivity {
         });
     }
 
-    private boolean redirectOnDefaultMensa(Collection<Mensa> mensas) {
+    private boolean redirectOnDefaultMensa() {
         Intent startIntent = getIntent();
         if (startIntent.hasExtra(EXTRA_NO_DEFAULT_REDIRECT)) {
             return false;
@@ -51,22 +49,17 @@ public class MensaActivity extends BaseActivity {
         startIntent.removeExtra(EXTRA_NO_DEFAULT_REDIRECT);
         DefaultMensaManager defaultManager = new DefaultMensaManager(this);
         if (defaultManager.hasDefault()) {
-            for (Mensa mensa : mensas) {
-                if (mensa.getShortName().equals(defaultManager.getDefaultMensaShortName())) {
-                    selectMensa(mensa);
-                    return true;
-                }
+            Mensa defaultMensa = Mensa.getMensa(defaultManager.getDefaultMensaShortName());
+            if (defaultMensa != null) {
+                selectMensa(defaultMensa);
+                return true;
             }
         }
         return false;
     }
 
     private void selectMensa(Mensa selectedMensa) {
-        Intent intent = new Intent(this, MenuActivity.class);
-        intent.putExtra(MenuActivity.EXTRA_MENSA_NAME, selectedMensa.getName());
-        intent.putExtra(MenuActivity.EXTRA_MENSA_SHORTNAME, selectedMensa.getShortName());
-        intent.putExtra(MenuActivity.EXTRA_MENSA_URL, selectedMensa.getDetailMenuURL());
-        startActivity(intent);
+        startActivity(MenuActivity.createIntent(this, selectedMensa));
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 }
