@@ -1,7 +1,7 @@
 package de.lukasniemeier.mensa.ui;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 
 /**
  * Created on 18.09.13.

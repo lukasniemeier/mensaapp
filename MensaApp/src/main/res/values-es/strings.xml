@@ -1,4 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Mensa App</string>
+    <string name="action_settings">Configuración</string>
+    <string name="action_refresh">Actualizar </string>
+    <string name="action_about">Sobre la app</string>
+    <string name="noodle_description">Pastas con diferentes salsas</string>
+    <string name="error_menu_download">Error cargando el menú de %1$s.</string>
+    <string name="error_menu_parse">Error procesando el menú de %1$s.</string>
+    <string name="today">Hoy</string>
+    <string name="tomorrow">Mañana</string>
+    <string name="missing_menu">Ningún menú.</string>
+    <string name="menu_empty_description_too_early">El menú de hoy no está disponible. Trata de nuevo más tarde, por favor!</string>
+    <string name="menu_empty_description_too_late">El menú de hoy no está más disponible. El horario del almuerzo ha terminado.</string>
+    <string name="menu_error_description">Error actualizando la app. Trata denuevo más tarde, por favor!</string>
+    <string name="menu_error_description_exception">Error actualizando la app (%1$s). Intentelo de nuevo más tarde, por favor!</string>
+    <string name="menu_error_description_network">Ahora no hay conexión al internet (%1$s). Trata de nuevo más tarde, por favor!</string>
+    <string name="menu_error_description_parse">Error procesando el menú (%1$s). Trata de nuevo más tarde, por favor!</string>
+    <string name="menu_error_button">De nuevo</string>
+    <string name="bottom_bar_not_now">Ahora no</string>
+    <string name="bottom_bar_make_default">Siempre \'%1$s\'</string>
+    <string name="title_activity_settings">Configuración</string>
+    <string name="pref_header_general">Generalmente</string>
+    <string name="pref_title_select_mensa_default">Elige tu cafetería</string>
+    <string name="pref_title_enable_mensa_default">Activa tu cafetería</string>
+    <string name="pref_none_select_mensa_default">Ningún</string>
+    <string name="pref_title_enable_show_prices">Enseña precios</string>
+    <string name="meal_type_unknown">Desconocido</string>
+    <string name="meal_type_fish">Pescado</string>
+    <string name="meal_type_pork">Cerdo</string>
+    <string name="meal_type_chicken">Ave</string>
+    <string name="meal_type_ovolactovegetabil">Ovo-lacto-vegetariana</string>
+    <string name="meal_type_mensavital">Comida \'MensaVital\'</string>
+    <string name="meal_type_beef">Carne</string>
+    <string name="meal_type_vegan">Vegano</string>
+    <string name="about_title">Sobre la app</string>
+    <string name="about_text">
+      Todos los datos sin garantía. No hay ningún relación con el Studentenwerk Potsdam.\n
+      Algunos icons se hicieron con \'PixelMixer\' (http://pixel-mixer.com).\n
+      Está versión se hico especialmente en honor al compleaño de Kathi.
+    </string>
+    <string name="meal_additives_no">Sin aditivos</string>
+    <string-array name="meal_additives_name_map">
+        <!-- Die hab ich auch nur von Google geklaut ... -->
+        <item>Error</item>
+        <item>Colorantes</item>
+        <item>Conservantes</item>
+        <item>Antioxidante</item>
+        <item>Potenciador del sabor</item>
+        <item>Fosfatos</item>
+        <item>encerado</item>
+        <item>sulfurado</item>
+        <item>ennegrecida</item>
+        <item>Edulcorantes</item>
+        <item>Aspartam-Acesulfamsalz</item>
+        <item>Alcohol</item>
+        <item>Cafeína</item>
+        <item>quinina</item>
+        <item>Clara de huevo</item>
+    </string-array>
+    <string name="pref_title_select_theme">Elige el tema</string>
+    <string name="mensa_opening_times">Horarios</string>
+    <string name="mensa_address">Dirección</string>
+    <string name="mensa_marked_as_default">\'%1$s eligido como primario.</string>
+    <string name="price_template">%1$s €</string>
 </resources>

@@ -4,8 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,11 +34,13 @@ public class MenuViewFragment extends Fragment {
 
     public interface RefreshViewListener {
         public void attachRefreshableView(View target);
+        public void removeRefreshableView(View target);
     }
 
     public static final String ARG_MENU = "ARG_MENU";
 
     private RefreshViewListener listener;
+    private GridView gridView;
 
     public MenuViewFragment() {
         // nothing yet.
@@ -69,9 +71,9 @@ public class MenuViewFragment extends Fragment {
         Menu menu = (Menu) getArguments().getSerializable(ARG_MENU);
 
         final MealAdapter adapter = new MealAdapter(getActivity());
-        final GridView gridView = (GridView) getView().findViewById(R.id.fragment_menu_view);
+        gridView = (GridView) getView().findViewById(R.id.fragment_menu_view);
         gridView.setAdapter(adapter);
-        adapter.addAll(menu.getMeals(), isFirstStart);
+        adapter.addAll(menu.getMeals(), false);
 
         final Animator first = AnimatorInflater.loadAnimator(getActivity(), R.animator.card_turn_over);
         final Animator second = AnimatorInflater.loadAnimator(getActivity(), R.animator.card_turn_over_2);
@@ -101,7 +103,19 @@ public class MenuViewFragment extends Fragment {
             }
         });
 
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         listener.attachRefreshableView(gridView);
+    }
+
+    @Override
+    public void onPause() {
+        listener.removeRefreshableView(gridView);
+        super.onPause();
     }
 
     @Override

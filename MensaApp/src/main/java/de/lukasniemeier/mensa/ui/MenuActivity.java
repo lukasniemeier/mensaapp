@@ -2,43 +2,31 @@ package de.lukasniemeier.mensa.ui;
 
 
 import android.app.ActionBar;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.text.format.DateUtils;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import de.lukasniemeier.mensa.R;
 import de.lukasniemeier.mensa.WeeklyMenuTask;
 import de.lukasniemeier.mensa.model.WeeklyMenu;
 import de.lukasniemeier.mensa.parser.WeeklyMenuParseException;
+import de.lukasniemeier.mensa.ui.adapter.NavigationAdapter;
 import de.lukasniemeier.mensa.utils.DefaultMensaManager;
-import de.lukasniemeier.mensa.utils.Utils;
 import uk.co.senab.actionbarpulltorefresh.library.DefaultHeaderTransformer;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 
 public class MenuActivity extends BaseActivity implements
-        ActionBar.OnNavigationListener,
         MenuViewFragment.RefreshViewListener,
         MenuViewSpecialFragment.RefreshListener {
 
@@ -51,13 +39,13 @@ public class MenuActivity extends BaseActivity implements
     private static final String STATE_WEEKLY_MENU = "weekly_menu";
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 
-    private static final DateFormat menuDateFormat = new SimpleDateFormat("c, d.MM");
-
     private URL mensaURL;
 
     private WeeklyMenu weeklyMenu;
-    private Map<Integer, Date> navigationMap;
+    private ViewPager viewPager;
+    private NavigationAdapter viewPagerAdapter;
 
+    private MenuItem refreshMenu;
     private PullToRefreshAttacher refresher;
     private View bottomBar;
 
@@ -66,16 +54,19 @@ public class MenuActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
+        final ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setTitle(getIntent().getStringExtra(EXTRA_MENSA_SHORTNAME));
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        viewPager = (ViewPager) findViewById(R.id.container);
+        viewPagerAdapter = new NavigationAdapter(viewPager, this, actionBar, getSupportFragmentManager());
+
         refresher = PullToRefreshAttacher.get(this);
         ((DefaultHeaderTransformer)refresher.getHeaderTransformer()).setProgressBarColor(
                 ThemeHelper.getRefreshBarColor(this));
 
         mensaURL = (URL) getIntent().getSerializableExtra(EXTRA_MENSA_URL);
-
-        final ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(getIntent().getStringExtra(EXTRA_MENSA_SHORTNAME));
-        actionBar.setDisplayHomeAsUpEnabled(true);
 
         int selectedDateIndex = 0;
         if (savedInstanceState != null && savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
@@ -86,16 +77,20 @@ public class MenuActivity extends BaseActivity implements
             weeklyMenu = (WeeklyMenu) savedInstanceState.getSerializable(STATE_WEEKLY_MENU);
         }
 
-        if (weeklyMenu == null || weeklyMenu.isOutdated()) {
-            refresh();
-        } else {
-            initializeNavigation(selectedDateIndex);
+        if (weeklyMenu != null && !weeklyMenu.isOutdated()) {
+            viewPagerAdapter.displayMenu(weeklyMenu, selectedDateIndex);
         }
 
         setupBottomBar();
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onStart();
+        if (weeklyMenu == null || weeklyMenu.isOutdated()) {
+            refresh();
+        }
+    }
 
     private static String getMensaShortName(MenuActivity activity) {
         return activity.getIntent().getStringExtra(MenuActivity.EXTRA_MENSA_SHORTNAME);
@@ -127,33 +122,44 @@ public class MenuActivity extends BaseActivity implements
     }
 
     private void refresh() {
-        if (!refresher.isRefreshing()) {
-            refresher.setRefreshing(true);
-        } else {
-            Log.w(TAG, "Refreshing already ongoing...");
-            return;
+        Log.i(TAG, "Refresh requested...");
+        refresher.setRefreshing(true);
+        if (refreshMenu != null) {
+            refreshMenu.setEnabled(false);
         }
+
 
         new WeeklyMenuTask(getApplicationContext(), new WeeklyMenuTask.WeeklyMenuReceiver() {
             @Override
             public void onWeeklyMenuSuccess(WeeklyMenu newWeeklyMenu) {
-                weeklyMenu = newWeeklyMenu;
                 refresher.setRefreshComplete();
-
-                FragmentManager manager = getFragmentManager();
-                Fragment fragment = manager.findFragmentById(R.id.container);
-                if (fragment != null) {
-                    manager.beginTransaction().remove(fragment).commitAllowingStateLoss();
+                if (refreshMenu != null) {
+                    refreshMenu.setEnabled(true);
                 }
+                Log.i(TAG, "Refresh complete (success)");
 
-                initializeNavigation(0);
+                weeklyMenu = newWeeklyMenu;
+                viewPagerAdapter.displayMenu(weeklyMenu, 0);
                 checkForDefaultMensa();
             }
 
             @Override
             public void onWeeklyMenuError(Exception error) {
                 refresher.setRefreshComplete();
+                if (refreshMenu != null) {
+                    refreshMenu.setEnabled(true);
+                }
+                Log.i(TAG, "Refresh complete (failed)");
 
+                String errorMessage = getErrorMessage(error);
+                //if (weeklyMenu == null) {
+                    viewPagerAdapter.displayError(errorMessage);
+                //} else {
+                    Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
+                //}
+            }
+
+            private String getErrorMessage(Exception error) {
                 String errorMessage;
                 if (error instanceof WeeklyMenuParseException) {
                     errorMessage = getString(R.string.menu_error_description_parse, error.getMessage());
@@ -162,15 +168,7 @@ public class MenuActivity extends BaseActivity implements
                 } else {
                     errorMessage = getString(R.string.menu_error_description_exception, error.getMessage());
                 }
-
-                if (weeklyMenu == null) {
-                    getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-                    getFragmentManager().beginTransaction()
-                            .replace(R.id.container, MenuViewErrorFragment.create(errorMessage))
-                            .commit();
-                } else {
-                    Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
-                }
+                return errorMessage;
             }
         }).execute(
                 "http://www.studentenwerk-potsdam.de/speiseplan.html",
@@ -183,47 +181,6 @@ public class MenuActivity extends BaseActivity implements
             bottomBar.setVisibility(View.VISIBLE);
             bottomBar.startAnimation(AnimationUtils.loadAnimation(this, R.anim.bottom_bar_slide_up));
         }
-    }
-
-    private void initializeNavigation(int selectedDateIndex) {
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-
-        navigationMap = new HashMap<Integer, Date>();
-        Date today = Utils.today();
-        int index = 0;
-        List<String> labels = new ArrayList<String>();
-
-
-        if (!weeklyMenu.hasMenu(today)) {
-            navigationMap.put(index++, today);
-            labels.add(getString(R.string.today));
-            // Since there is no 'today' we preselect tomorrow
-            if (selectedDateIndex == 0 && !weeklyMenu.getMenus().isEmpty()) {
-                selectedDateIndex++;
-            }
-        }
-
-        for (Date date : weeklyMenu.getMenus().keySet()) {
-            navigationMap.put(index++, date);
-            if (DateUtils.isToday(date.getTime())) {
-                labels.add(getString(R.string.today));
-            } else if(DateUtils.isToday(date.getTime() - 1000 * 60 * 60 * 24)) {
-                labels.add(getString(R.string.tomorrow));
-            } else {
-                labels.add(menuDateFormat.format(date));
-            }
-        }
-
-        actionBar.setListNavigationCallbacks(
-                new ArrayAdapter<String>(
-                        actionBar.getThemedContext(),
-                        android.R.layout.simple_list_item_1,
-                        android.R.id.text1,
-                        labels),
-                this);
-
-        getActionBar().setSelectedNavigationItem(selectedDateIndex);
     }
 
     @Override
@@ -252,6 +209,7 @@ public class MenuActivity extends BaseActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+        refreshMenu = menu.findItem(R.id.action_refresh);
         return true;
     }
 
@@ -270,36 +228,6 @@ public class MenuActivity extends BaseActivity implements
     }
 
     @Override
-    public boolean onNavigationItemSelected(int position, long id) {
-        FragmentManager manager = getFragmentManager();
-        Date date = navigationMap.get(position);
-        String dateTag = date.toString();
-        if (weeklyMenu.hasMenu(date)) {
-
-            if (manager.findFragmentByTag(dateTag) == null) {
-                Fragment fragment = MenuViewFragment.create(weeklyMenu.getMenu(date));
-
-                FragmentTransaction transaction = manager.beginTransaction();
-                /* Use back button for ActionBar navigation
-                if (manager.findFragmentById(R.id.container) != null) {
-                    transaction.addToBackStack(null);
-                }*/
-                transaction.replace(R.id.container, fragment, dateTag).commit();
-            }
-        } else if (DateUtils.isToday(date.getTime())) {
-            manager.beginTransaction()
-                    .replace(R.id.container, new MenuViewEmptyFragment(), dateTag)
-                    .commit();
-        } else {
-            Toast.makeText(
-                    getApplicationContext(),
-                    String.format(getString(R.string.missing_menu), menuDateFormat.format(date)),
-                    Toast.LENGTH_LONG).show();
-        }
-        return true;
-    }
-
-    @Override
     public void attachRefreshableView(View target) {
         refresher.addRefreshableView(target, new PullToRefreshAttacher.OnRefreshListener() {
             @Override
@@ -307,6 +235,11 @@ public class MenuActivity extends BaseActivity implements
                 refresh();
             }
         });
+    }
+
+    @Override
+    public void removeRefreshableView(View target) {
+        refresher.removeRefreshableView(target);
     }
 
     @Override

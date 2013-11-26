@@ -9,7 +9,7 @@
     <string name="error_menu_parse">Fehler beim Verarbeiten des Speiseplans von %1$s.</string>
     <string name="today">Heute</string>
     <string name="tomorrow">Morgen</string>
-    <string name="missing_menu">Kein Speiseplan für %1$s.</string>
+    <string name="missing_menu">Kein Speiseplan.</string>
     <string name="menu_empty_description_too_early">Der Speiseplan für heute ist noch nicht verfügbar. Schau\' später noch einmal nach!</string>
     <string name="menu_empty_description_too_late">Der Speiseplan für heute ist nicht mehr verfügbar. Die Mittagszeit ist vorbei.</string>
     <string name="menu_error_description">Es gab ein Problem bei der Aktualisierung. Bitte versuche es später noch einmal.</string>

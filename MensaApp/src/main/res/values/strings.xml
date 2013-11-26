@@ -9,7 +9,7 @@
     <string name="error_menu_parse">Error parsing menu at %1$s.</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
-    <string name="missing_menu">There is no menu for date %1$s.</string>
+    <string name="missing_menu">There is no menu.</string>
     <string name="menu_empty_description_too_early">Today\'s bill of fare is not yet available. Come back later.</string>
     <string name="menu_empty_description_too_late">Today\'s bill of fare is currently not available. Lunch time is over.</string>
     <string name="menu_error_description">There was a problem while refreshing. Please try again later.</string>

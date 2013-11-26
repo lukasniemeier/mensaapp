@@ -15,6 +15,10 @@ import de.lukasniemeier.mensa.R;
  */
 public class MenuViewEmptyFragment extends MenuViewSpecialFragment {
 
+    public static MenuViewEmptyFragment create() {
+        return new MenuViewEmptyFragment();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Calendar now = Calendar.getInstance();
