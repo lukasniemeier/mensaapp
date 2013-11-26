@@ -9,7 +9,7 @@
     <string name="error_menu_parse">Erreur lors du traitement du menu de %1$s.</string>
     <string name="today">Aujourd\'hui</string>
     <string name="tomorrow">Demain</string>
-    <string name="missing_menu">Aucun menu pour %1$s.</string>
+    <string name="missing_menu">Aucun menu.</string>
     <string name="menu_empty_description_too_early">Le menu d\'aujourd\'hui n\'est pas encore disponible. Réessayez plus tard!</string>
     <string name="menu_empty_description_too_late">Le menu d\'aujourd\'hui n\'est plus disponible. L\'heure du déjeuner est finie.</string>
     <string name="menu_error_description">Il y avait un problème lors de l\'actualisation. Réessayez plus tard!</string>
