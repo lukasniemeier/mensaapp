@@ -55,8 +55,6 @@ public class MealContextHandler implements ActionMode.Callback, AdapterView.OnIt
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_meal_share:
-                finish();
             default:
                 return false;
         }
@@ -64,12 +62,10 @@ public class MealContextHandler implements ActionMode.Callback, AdapterView.OnIt
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
+        if (selectedView != null) {
+            selectedView.setSelected(false);
+        }
         actionMode = null;
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        finish();
     }
 
     @Override
@@ -83,6 +79,11 @@ public class MealContextHandler implements ActionMode.Callback, AdapterView.OnIt
         selectedView.setSelected(true);
         setShareIntent(adapter.getItem(position).getValue());
         return true;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        finish();
     }
 
     @Override
@@ -103,12 +104,11 @@ public class MealContextHandler implements ActionMode.Callback, AdapterView.OnIt
     }
 
     private void setShareIntent(Meal meal) {
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, getShareText(meal));
-        shareIntent.setType("text/plain");
-
         if (shareActionProvider != null) {
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getShareText(meal));
+            shareIntent.setType("text/plain");
             shareActionProvider.setShareIntent(shareIntent);
         }
     }
