@@ -1,6 +1,7 @@
 package de.lukasniemeier.mensa.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.text.format.Time;
 
@@ -31,5 +32,10 @@ public class Utils {
         Intent i = context.getBaseContext().getPackageManager().getLaunchIntentForPackage(context.getBaseContext().getPackageName());
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(i);
+    }
+
+    public static int dpToPx(Context context, int dp) {
+        float density = context.getResources().getDisplayMetrics().density;
+        return (int)(dp * density);
     }
 }

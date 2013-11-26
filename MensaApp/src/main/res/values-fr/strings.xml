@@ -33,7 +33,7 @@
     <string name="meal_type_mensavital">mensaVital</string>
     <string name="meal_type_beef">Boeuf</string>
     <string name="meal_type_vegan">Végétalien</string>
-    <string name="about_text">Informations données sans garantie. Il n\'y a aucun lien avec le Studentenwerk Potsdam.\nPlusieurs icôns sont construit par \'PixelMixer\' (http://pixel-mixer.com).\nCette version a été compilée spécifiquement en l\'honneur de l\'anniversaire de Kathi.</string>
+    <string name="about_text">Informations données sans garantie. Il n\'y a aucun lien avec le Studentenwerk Potsdam.\nPlusieurs icôns sont construit par icons8.com.\nCette version a été compilée spécifiquement en l\'honneur de l\'anniversaire de Kathi.</string>
     <string name="about_title">À propos</string>
     <string name="meal_additives_no">Sans additifs</string>
     <string-array name="meal_additives_name_map">

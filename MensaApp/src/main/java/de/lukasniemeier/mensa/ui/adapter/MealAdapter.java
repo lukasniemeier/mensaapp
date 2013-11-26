@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import de.lukasniemeier.mensa.R;
 import de.lukasniemeier.mensa.model.Meal;
 import de.lukasniemeier.mensa.model.MealType;
+import de.lukasniemeier.mensa.utils.Utils;
 
 public class MealAdapter extends CardAdapter<Meal> {
 
@@ -57,15 +59,6 @@ public class MealAdapter extends CardAdapter<Meal> {
 
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("settings_check_prices", true)) {
             TextView ribbonText = (TextView) ribbonRightView.findViewById(R.id.card_ribbon_right_text);
-            /*if (meal.getName().equals("Angebot 1")) {
-                ribbonText.setText(getContext().getString(R.string.price_1_40));
-            } else if (meal.getName().equals("Angebot 2")) {
-                ribbonText.setText(getContext().getString(R.string.price_2_00));
-            } else if (meal.getName().equals("Angebot 3")) {
-                ribbonText.setText(getContext().getString(R.string.price_2_50));
-            } else if (meal.getName().equals("Alternativ-Angebot")) {
-                ribbonText.setText(getContext().getString(R.string.price_2_50));
-            }*/
             ribbonText.setText(meal.getPrice());
         }
 
@@ -80,15 +73,25 @@ public class MealAdapter extends CardAdapter<Meal> {
         ribbonRightView.setVisibility(View.GONE);
         nameView.setGravity(Gravity.RIGHT);
 
+        StringBuilder descriptionText = new StringBuilder();
         if (meal.getAdditives().isEmpty()) {
-            descriptionView.setText(getContext().getString(R.string.meal_additives_no));
+            descriptionText.append(getContext().getString(R.string.meal_additives_no));
         } else {
-            descriptionView.setText(TextUtils.join(", ", meal.getAdditives()));
+            descriptionText.append(TextUtils.join(", ", meal.getAdditives()));
         }
+
+        int margin = Utils.dpToPx(getContext(), 5);
+        LinearLayout.LayoutParams typeViewLayout = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        typeViewLayout.setMargins(0, margin,  0, margin);
+
         for (MealType type : meal.getTypes()) {
             ImageView typeView = new ImageView(getContext());
+            typeView.setLayoutParams(typeViewLayout);
             typeView.setImageBitmap(type.getIcon());
             typeGroup.addView(typeView);
         }
+
+        descriptionView.setText(descriptionText.toString());
     }
 }

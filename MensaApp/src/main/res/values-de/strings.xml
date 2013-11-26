@@ -33,7 +33,7 @@
     <string name="meal_type_mensavital">mensaVital</string>
     <string name="meal_type_beef">Rind</string>
     <string name="meal_type_vegan">Vegan</string>
-    <string name="about_text">Alle Angaben ohne Gewähr.Es besteht kein Zusammenhang zum Studentenwerk Potsdam.\nEinige Icons erstellt durch \'PixelMixer\' (http://pixel-mixer.com).\nDiese Version wurde speziell zu Ehren von Kathis Geburtstags zusammengestellt.</string>
+    <string name="about_text">Alle Angaben ohne Gewähr. Es besteht kein Zusammenhang zum Studentenwerk Potsdam.\nEinige Icons erstellt durch icons8.com.\nDiese Version wurde speziell zu Ehren von Kathis Geburtstags zusammengestellt.</string>
     <string name="about_title">Über</string>
     <string name="meal_additives_no">Keine Zusatzstoffe</string>
     <string-array name="meal_additives_name_map">

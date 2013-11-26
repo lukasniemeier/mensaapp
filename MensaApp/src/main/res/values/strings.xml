@@ -33,7 +33,7 @@
     <string name="meal_type_mensavital">mensaVital</string>
     <string name="meal_type_beef">Beef</string>
     <string name="meal_type_vegan">Vegan</string>
-    <string name="about_text">No responsibility is accepted for the accuracy of presented information.This app is not affiliated with \'Studentenwerk Potsdam\'.\nSome icons made by \'PixelMixer\' (http://pixel-mixer.com).\nThis app\'s version is Kathi\'s special birthday edition.</string>
+    <string name="about_text">No responsibility is accepted for the accuracy of presented information. This app is not affiliated with \'Studentenwerk Potsdam\'.\nSome icons made by icons8.com.\nThis app\'s version is Kathi\'s special birthday edition.</string>
     <string name="about_title">About</string>
     <string name="meal_additives_no">There are no additives</string>
     <string-array name="meal_additives_name_map">
