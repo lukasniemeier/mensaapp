@@ -1,4 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Mensa App</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="action_refresh">Rafraîchir</string>
+    <string name="action_about">À propos</string>
+    <string name="noodle_description">Délicieux plats de pâtes à la méditerranéenne avec plusieurs sauces.</string>
+    <string name="error_menu_download">Erreur lors du chargement du menu de %1$s.</string>
+    <string name="error_menu_parse">Erreur lors du traitement du menu de %1$s.</string>
+    <string name="today">Aujourd\'hui</string>
+    <string name="tomorrow">Demain</string>
+    <string name="missing_menu">Aucun menu pour %1$s.</string>
+    <string name="menu_empty_description_too_early">Le menu d\'aujourd\'hui n\'est pas encore disponible. Réessayez plus tard!</string>
+    <string name="menu_empty_description_too_late">Le menu d\'aujourd\'hui n\'est plus disponible. L\'heure du déjeuner est finie.</string>
+    <string name="menu_error_description">Il y avait un problème lors de l\'actualisation. Réessayez plus tard!</string>
+    <string name="menu_error_description_exception">Il y avait un problème lors de l\'actualisation (%1$s). Réessayez plus tard!</string>
+    <string name="menu_error_description_network">Aucun réseau n\'est disponible (%1$s). Réessayez plus tard!</string>
+    <string name="menu_error_description_parse">Il y avait un problème lors de lecture du menu (%1$s). Réessayez plus tard!</string>
+    <string name="menu_error_button">Répéter</string>
+    <string name="bottom_bar_not_now">Pas maintenant</string>
+    <string name="bottom_bar_make_default">Toujours \'%1$s\'</string>
+    <string name="title_activity_settings">Paramètres</string>
+    <string name="pref_header_general">Général</string>
+    <string name="pref_title_select_mensa_default">Choisir \'Mensa standard\'</string>
+    <string name="pref_title_enable_mensa_default">Activer \'Mensa standard\'</string>
+    <string name="pref_none_select_mensa_default">Aucun</string>
+    <string name="pref_title_enable_show_prices">Indiquer les prix</string>
+    <string name="meal_type_unknown">Inconnu</string>
+    <string name="meal_type_fish">Poisson</string>
+    <string name="meal_type_pork">Porc</string>
+    <string name="meal_type_chicken">Volaille</string>
+    <string name="meal_type_ovolactovegetabil">Ovo-lacto-végétabil</string>
+    <string name="meal_type_mensavital">mensaVital</string>
+    <string name="meal_type_beef">Boeuf</string>
+    <string name="meal_type_vegan">Végétalien</string>
+    <string name="about_text">Informations données sans garantie. Il n\'y a aucun lien avec le Studentenwerk Potsdam.\nPlusieurs icôns sont construit par \'PixelMixer\' (http://pixel-mixer.com).\nCette version a été compilée spécifiquement en l\'honneur de l\'anniversaire de Kathi.</string>
+    <string name="about_title">À propos</string>
+    <string name="meal_additives_no">Sans additifs</string>
+    <string-array name="meal_additives_name_map">
+        <item>Erreur</item>
+        <item>Colorants</item>
+        <item>Conservateurs</item>
+        <item>Antioxidants</item>
+        <item>Exhausteurs de goût</item>
+        <item>Phosphates</item>
+        <item>ciré</item>
+        <item>sulfuré</item>
+        <item>noircissant</item>
+        <item>Édulcorants</item>
+        <item>Sel aspartame-acésulfame</item>
+        <item>Alcool</item>
+        <item>Caféine</item>
+        <item>contenant du quinquina</item>
+        <item>Blanc d\'oeuf</item>
+    </string-array>
+    <string name="pref_title_select_theme">Changer le style</string>
+    <string name="mensa_opening_times">Heures d\'ouverture</string>
+    <string name="mensa_address">Adresse</string>
+    <string name="mensa_marked_as_default">\'%1$s est choisi comme standard.</string>
+    <string name="price_template">%1$s €</string>
 </resources>
