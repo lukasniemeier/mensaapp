@@ -3,6 +3,7 @@ package de.lukasniemeier.mensa.ui;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Toast;
@@ -45,7 +47,7 @@ public class MenuActivity extends BaseActivity implements
     private ViewPager viewPager;
     private NavigationAdapter viewPagerAdapter;
 
-    private MenuItem refreshMenu;
+    private MenuItem refreshMenuItem;
     private PullToRefreshAttacher refresher;
     private View bottomBar;
 
@@ -56,8 +58,9 @@ public class MenuActivity extends BaseActivity implements
 
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(getIntent().getStringExtra(EXTRA_MENSA_SHORTNAME));
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+        setTitle(getIntent().getStringExtra(EXTRA_MENSA_SHORTNAME));
 
         viewPager = (ViewPager) findViewById(R.id.container);
         viewPagerAdapter = new NavigationAdapter(viewPager, this, actionBar, getSupportFragmentManager());
@@ -124,8 +127,8 @@ public class MenuActivity extends BaseActivity implements
     private void refresh() {
         Log.i(TAG, "Refresh requested...");
         refresher.setRefreshing(true);
-        if (refreshMenu != null) {
-            refreshMenu.setEnabled(false);
+        if (refreshMenuItem != null) {
+            refreshMenuItem.setEnabled(false);
         }
 
 
@@ -133,8 +136,8 @@ public class MenuActivity extends BaseActivity implements
             @Override
             public void onWeeklyMenuSuccess(WeeklyMenu newWeeklyMenu) {
                 refresher.setRefreshComplete();
-                if (refreshMenu != null) {
-                    refreshMenu.setEnabled(true);
+                if (refreshMenuItem != null) {
+                    refreshMenuItem.setEnabled(true);
                 }
                 Log.i(TAG, "Refresh complete (success)");
 
@@ -146,8 +149,8 @@ public class MenuActivity extends BaseActivity implements
             @Override
             public void onWeeklyMenuError(Exception error) {
                 refresher.setRefreshComplete();
-                if (refreshMenu != null) {
-                    refreshMenu.setEnabled(true);
+                if (refreshMenuItem != null) {
+                    refreshMenuItem.setEnabled(true);
                 }
                 Log.i(TAG, "Refresh complete (failed)");
 
@@ -209,8 +212,23 @@ public class MenuActivity extends BaseActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        refreshMenu = menu.findItem(R.id.action_refresh);
+        refreshMenuItem = menu.findItem(R.id.action_refresh);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (isEnoughSpaceOnActionBar()) {
+            refreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        } else {
+            refreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    private boolean isEnoughSpaceOnActionBar() {
+        return ViewConfiguration.get(this).hasPermanentMenuKey() ||
+                getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     @Override
