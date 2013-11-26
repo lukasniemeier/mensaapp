@@ -78,6 +78,8 @@ public abstract class WeeklyMenuParser {
             return "2,50";
         } else if (mealName.equals("Alternativ-Angebot")) {
             return "2,50";
+        } else if (mealName.equals(SPECIAL_MEAL_NOODLE)) {
+            return "2,00";
         }
         return "?,??";
     }
