@@ -25,10 +25,9 @@ public class ThemeHelper {
 
     public static int currentTheme(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String themeValue = preferences.getString("settings_list_theme", "");
-        if (themeValue.isEmpty()) {
-            return R.style.Theme_Studi_Theme;
-        }
+        String themeValue = preferences.getString("settings_list_theme", String.valueOf(R.style.Theme_Studi_Theme));
+        // ensure value is saved
+        preferences.edit().putString("settings_list_theme", themeValue).commit();
         return Integer.valueOf(themeValue);
     }
 }

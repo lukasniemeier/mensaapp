@@ -33,6 +33,7 @@ public class GeneralPreferenceFragment extends BasePreferenceFragment {
         ListPreference selectDefaultMensa = (ListPreference) findPreference("settings_list_mensa_default");
         setupMensaList(selectDefaultMensa);
 
+        bindPreferenceSummaryToValue(selectTheme);
         bindPreferenceToCheckbox(enableDefaultMensa, selectDefaultMensa);
         bindPreferenceSummaryToValue(selectDefaultMensa);
     }
