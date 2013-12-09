@@ -13,6 +13,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import de.lukasniemeier.mensa.R;
 import de.lukasniemeier.mensa.model.Meal;
 import de.lukasniemeier.mensa.model.MealType;
@@ -20,8 +24,65 @@ import de.lukasniemeier.mensa.utils.Utils;
 
 public class MealAdapter extends CardAdapter<Meal> {
 
-    public MealAdapter(Context context) {
+    private final List<CardState<Meal>> filteredItems;
+    private final MealAdapterMealTypeFilter filter;
+
+    public MealAdapter(Context context, TextView informationView) {
         super(context);
+        this.filteredItems = new ArrayList<CardState<Meal>>();
+        this.filter = new MealAdapterMealTypeFilter(this, informationView);
+    }
+
+    public List<CardState<Meal>> getFilteredItems() {
+        return filteredItems;
+    }
+
+    @Override
+    public void add(CardState<Meal> object) {
+        filteredItems.add(object);
+        super.add(object);
+        filter.filter();
+    }
+
+    @Override
+    public void addAll(Collection<? extends CardState<Meal>> collection) {
+        filteredItems.addAll(collection);
+        super.addAll(collection);
+        filter.filter();
+    }
+
+    @Override
+    public void clear() {
+        filteredItems.clear();
+        super.clear();
+        filter.filter();
+    }
+
+    @Override
+    public CardState<Meal> getItem(int position) {
+        synchronized (filteredItems) {
+            return filteredItems.get(position);
+        }
+    }
+
+    @Override
+    public int getCount() {
+        synchronized (filteredItems) {
+            return filteredItems.size();
+        }
+    }
+
+    public List<CardState<Meal>> getAllItems() {
+        List<CardState<Meal>> allItems = new ArrayList<CardState<Meal>>();
+        for (int i = 0; i < super.getCount(); i++) {
+            allItems.add(super.getItem(i));
+        }
+        return allItems;
+    }
+
+    @Override
+    public MealAdapterMealTypeFilter getFilter() {
+        return filter;
     }
 
     @Override
@@ -94,4 +155,6 @@ public class MealAdapter extends CardAdapter<Meal> {
 
         descriptionView.setText(descriptionText.toString());
     }
+
+
 }

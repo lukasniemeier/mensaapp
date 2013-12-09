@@ -2,6 +2,7 @@ package de.lukasniemeier.mensa.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.provider.CalendarContract;
 import android.view.ActionMode;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +32,7 @@ public class MealContextHandler implements ActionMode.Callback, AdapterView.OnIt
     private View selectedView;
 
     private ShareActionProvider shareActionProvider;
+    private Intent reminderIntent;
 
     public MealContextHandler(Activity activity, CardAdapter<Meal> adapter) {
         this.activity = activity;
@@ -55,6 +57,11 @@ public class MealContextHandler implements ActionMode.Callback, AdapterView.OnIt
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_meal_reminder:
+                if (reminderIntent != null) {
+                    activity.startActivity(reminderIntent);
+                }
+                return true;
             default:
                 return false;
         }
@@ -77,7 +84,7 @@ public class MealContextHandler implements ActionMode.Callback, AdapterView.OnIt
         actionMode = activity.startActionMode(this);
         selectedView = view;
         selectedView.setSelected(true);
-        setShareIntent(adapter.getItem(position).getValue());
+        setIntents(adapter.getItem(position).getValue());
         return true;
     }
 
@@ -101,6 +108,24 @@ public class MealContextHandler implements ActionMode.Callback, AdapterView.OnIt
             actionMode.finish();
         }
         selectedView = null;
+    }
+
+    private void setIntents(Meal meal) {
+        setReminderIntent(meal);
+        setShareIntent(meal);
+    }
+
+    private void setReminderIntent(Meal meal) {
+        SerializableTime beginTime = meal.getMenu().getMenuDay();
+        SerializableTime endTime = new SerializableTime(beginTime.getTime());
+        reminderIntent = new Intent(Intent.ACTION_INSERT)
+                .setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.toMillis())
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.toMillis())
+                .putExtra(CalendarContract.Events.TITLE, meal.getName())
+                .putExtra(CalendarContract.Events.DESCRIPTION, meal.getDescription())
+                .putExtra(CalendarContract.Events.EVENT_LOCATION, meal.getMenu().getWeeklyMenu().getMensa().getName())
+                .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_FREE);
     }
 
     private void setShareIntent(Meal meal) {

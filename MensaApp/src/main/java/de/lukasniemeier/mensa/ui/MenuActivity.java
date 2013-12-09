@@ -88,6 +88,7 @@ public class MenuActivity extends BaseActivity implements
         }
 
         if (weeklyMenu != null && !weeklyMenu.isOutdated()) {
+            Log.i(TAG, "Showing restored WeeklyMenu with index " + selectedDateIndex);
             viewPagerAdapter.displayMenu(weeklyMenu, selectedDateIndex);
         }
 

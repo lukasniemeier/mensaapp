@@ -30,19 +30,24 @@ import de.lukasniemeier.mensa.utils.Utils;
 public class NavigationAdapterMenuState extends NavigationAdapterState implements
         ActionBar.OnNavigationListener {
 
-    private final WeeklyMenu weeklyMenu;
-    private final Map<Integer, Fragment> navigationMap;
+    private WeeklyMenu weeklyMenu;
+    private Map<Integer, Fragment> navigationMap;
+    private int selectedDateIndex;
 
     public NavigationAdapterMenuState(NavigationAdapter stateContext, Context context,
-                                      WeeklyMenu menu, int initialIndex) {
+                                      WeeklyMenu menu, int initialDateIndex) {
         super(stateContext, context);
-        this.weeklyMenu = menu;
-        this.navigationMap = new HashMap<Integer, Fragment>();
-
-        initializeNavigation(initialIndex);
+        refresh(menu, initialDateIndex);
     }
 
-    private void initializeNavigation(int selectedDateIndex) {
+    private void refresh(WeeklyMenu menu, int initialDateIndex) {
+        this.weeklyMenu = menu;
+        this.navigationMap = new HashMap<Integer, Fragment>();
+        this.selectedDateIndex = initialDateIndex;
+        initializeNavigation();
+    }
+
+    private void initializeNavigation() {
         SerializableTime today = Utils.today();
         int index = 0;
 
@@ -52,7 +57,7 @@ public class NavigationAdapterMenuState extends NavigationAdapterState implement
             navigationMap.put(index++, MenuViewEmptyFragment.create());
             labels.add(context.getString(R.string.today));
             // Since there is no 'today' we preselect tomorrow
-            if (selectedDateIndex == 0 && !weeklyMenu.getMenus().isEmpty()) {
+            if (!weeklyMenu.getMenus().isEmpty()) {
                 selectedDateIndex++;
             }
         }
@@ -64,6 +69,7 @@ public class NavigationAdapterMenuState extends NavigationAdapterState implement
         }
 
         ActionBar actionBar = stateContext.getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         actionBar.setListNavigationCallbacks(
                 new ArrayAdapter<String>(
                         actionBar.getThemedContext(),
@@ -71,16 +77,17 @@ public class NavigationAdapterMenuState extends NavigationAdapterState implement
                         android.R.id.text1,
                         labels),
                 this);
-
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        actionBar.setSelectedNavigationItem(selectedDateIndex);
         stateContext.getPager().setOnPageChangeListener(pageSelectionListener);
     }
 
+    public int getSelectedPage() {
+        return selectedDateIndex;
+    }
+
     @Override
-    public void displayMenu(WeeklyMenu menu, int initialMenuIndex) {
-        stateContext.getPager().setOnPageChangeListener(null);
-        super.displayMenu(menu, initialMenuIndex);
+    public int displayMenu(WeeklyMenu menu, int initialMenuIndex) {
+        refresh(menu, initialMenuIndex);
+        return getSelectedPage();
     }
 
     @Override
@@ -117,6 +124,7 @@ public class NavigationAdapterMenuState extends NavigationAdapterState implement
 
     @Override
     public boolean onNavigationItemSelected(int position, long l) {
+        selectedDateIndex = position;
         stateContext.getPager().setCurrentItem(position, false);
         return true;
     }
@@ -129,7 +137,9 @@ public class NavigationAdapterMenuState extends NavigationAdapterState implement
 
         @Override
         public void onPageSelected(int position) {
-            stateContext.getActionBar().setSelectedNavigationItem(position);
+            if (stateContext.getActionBar().getSelectedNavigationIndex() != position) {
+                stateContext.getActionBar().setSelectedNavigationItem(position);
+            }
 
             for (int i = 0; i < getCount(); i++) {
                 Fragment hiddenFragment = getItem(i);

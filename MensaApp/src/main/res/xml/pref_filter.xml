@@ -1,0 +1,7 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <de.lukasniemeier.mensa.ui.preference.StandaloneMultiSelectListPreference
+        android:key="filter_meal_types"
+        android:title="@string/pref_title_select_theme" />
+
+</PreferenceScreen>

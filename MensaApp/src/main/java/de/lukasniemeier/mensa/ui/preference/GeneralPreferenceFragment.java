@@ -1,5 +1,7 @@
 package de.lukasniemeier.mensa.ui.preference;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -21,6 +23,14 @@ import de.lukasniemeier.mensa.utils.Utils;
  */
 
 public class GeneralPreferenceFragment extends BasePreferenceFragment {
+
+    public static Intent createIntent(Context context) {
+        Intent intent = new Intent(context, SettingsActivity.class);
+        intent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT, GeneralPreferenceFragment.class.getName());
+        intent.putExtra(SettingsActivity.EXTRA_NO_HEADERS, true );
+        return intent;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

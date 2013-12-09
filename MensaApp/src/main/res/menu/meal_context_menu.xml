@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_meal_reminder"
+        android:title="@string/action_about"
+        android:icon="@drawable/ic_menu_my_calendar"
+        android:showAsAction="always" />
     <item android:id="@+id/action_meal_share"
-        android:title="@string/action_settings"
+        android:title="@android:string/untitled"
         android:showAsAction="always|withText"
         android:actionProviderClass="android.widget.ShareActionProvider" />
 </menu>

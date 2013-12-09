@@ -59,20 +59,22 @@ public class NavigationAdapter extends FragmentPagerAdapter {
     }
 
     public void displayMenu(WeeklyMenu menu, int initialMenuIndex) {
-        state.displayMenu(menu, initialMenuIndex);
+        int pageToSelect =  state.displayMenu(menu, initialMenuIndex);
+        notifyDataSetChanged();
+        pager.setCurrentItem(pageToSelect, true);
     }
 
     public void displayError(String errorMessage) {
         state.displayError(errorMessage);
+        notifyDataSetChanged();
     }
 
     public void setState(NavigationAdapterState newState) {
         this.state = newState;
-        notifyDataSetChanged();
     }
 
     @Override
-    public android.support.v4.app.Fragment getItem(int position) {
+    public Fragment getItem(int position) {
         return state.getItem(position);
     }
 
@@ -84,7 +86,7 @@ public class NavigationAdapter extends FragmentPagerAdapter {
     @Override
     public long getItemId(int position) {
         // return a state-scoped unique hash
-        return (((long)state.hashCode()) << 32) | (position & 0xffffffffL);
+        return (((long)state.hashCode()) << 32) | (getItem(position).hashCode() & 0xffffffffL);
     }
 
     @Override

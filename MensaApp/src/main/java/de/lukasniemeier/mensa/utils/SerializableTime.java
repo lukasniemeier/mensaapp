@@ -65,4 +65,19 @@ public class SerializableTime implements Comparable<SerializableTime>, Serializa
     public int compareTo(SerializableTime other) {
         return Time.compare(this.getTime(), other.getTime());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SerializableTime that = (SerializableTime) o;
+        return timestamp.toMillis(false) == that.timestamp.toMillis(false);
+    }
+
+    @Override
+    public int hashCode() {
+        long ht = timestamp.toMillis(false);
+        return (int) ht ^ (int) (ht >> 32);
+    }
 }

@@ -13,12 +13,14 @@ import de.lukasniemeier.mensa.R;
 public class ThemeHelper {
 
     public static int getRefreshBarColor(Context context) {
-        int colorId = context.getResources().getColor(R.color.dark_green_studi);
         TypedArray attributes = context.getTheme().obtainStyledAttributes(
                 new int[]{R.attr.refresh_bar_color});
+        int colorId;
         if (attributes != null) {
             colorId = attributes.getColor(0, R.color.dark_green_studi);
             attributes.recycle();
+        } else {
+            colorId = context.getResources().getColor(R.color.dark_green_studi);
         }
         return colorId;
     }

@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.lukasniemeier.mensa.R;
 import de.lukasniemeier.mensa.model.Mensa;
 import de.lukasniemeier.mensa.model.Menu;
 import de.lukasniemeier.mensa.model.WeeklyMenu;
@@ -82,7 +81,7 @@ public class TodaysMenuParser extends WeeklyMenuParser {
         if (price == null) {
             price = getDefaultPrice(name);
         }
-        return context.getString(R.string.price_template, price);
+        return price;
     }
 
     private Collection<String> getAlternativeNames(String name) {

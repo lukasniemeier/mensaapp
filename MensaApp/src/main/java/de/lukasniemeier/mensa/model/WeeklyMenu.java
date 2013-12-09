@@ -48,7 +48,7 @@ public class WeeklyMenu implements Serializable {
     }
 
     public boolean hasMenu(SerializableTime date) {
-        return menuMap.containsKey(date);
+        return menuMap.keySet().contains(date);
     }
 
     public static WeeklyMenu merge(Mensa mensa, SerializableTime timestamp, List<WeeklyMenu> menus) {

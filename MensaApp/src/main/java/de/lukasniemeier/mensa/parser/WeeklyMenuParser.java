@@ -95,7 +95,8 @@ public abstract class WeeklyMenuParser {
             parsedDescription = context.getString(R.string.noodle_description);
         }
         if (!parsedDescription.isEmpty()) {
-            menu.add(new Meal(menu, name, parsedDescription, types, parseAdditives(description), price));
+            menu.add(new Meal(menu, name, parsedDescription, types, parseAdditives(description),
+                    context.getString(R.string.price_template, price)));
         }
     }
 

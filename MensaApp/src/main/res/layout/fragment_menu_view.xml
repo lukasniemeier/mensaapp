@@ -4,13 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <GridView
+    <ListView
         android:id="@+id/fragment_menu_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@null"
         android:dividerHeight="0dp"
-        android:numColumns="1"
         android:listSelector="@drawable/selector_transparent"/>
 
 </FrameLayout>

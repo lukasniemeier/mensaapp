@@ -45,16 +45,6 @@ public abstract class CardAdapter<T> extends ArrayAdapter<CardState<T>> {
         cardHeightEnsurer = null;
     }
 
-    @Override
-    public void add(CardState<T> object) {
-        add(object, true);
-    }
-
-    @Override
-    public void addAll(Collection<? extends CardState<T>> collection) {
-        addAll(collection, true);
-    }
-
     public void add(T object, boolean showAnimation) {
         add(new CardState<T>(object), showAnimation);
     }
@@ -63,14 +53,14 @@ public abstract class CardAdapter<T> extends ArrayAdapter<CardState<T>> {
         if (showAnimation) {
             animationSet.add(object.getValue());
         }
-        super.add(object);
+        add(object);
     }
 
     public void addAll(List<? extends T> collection, boolean showAnimation) {
         if (showAnimation) {
             animationSet.addAll(collection);
         }
-        super.addAll(Collections2.transform(collection, new Function<T, CardState<T>>() {
+        addAll(Collections2.transform(collection, new Function<T, CardState<T>>() {
             @Override
             public CardState<T> apply(T value) {
                 return new CardState<T>(value);
@@ -87,7 +77,7 @@ public abstract class CardAdapter<T> extends ArrayAdapter<CardState<T>> {
                 }
             }));
         }
-        super.addAll(collection);
+        addAll(collection);
     }
 
     protected abstract Animator createAddAnimator(Context context);
@@ -168,6 +158,7 @@ public abstract class CardAdapter<T> extends ArrayAdapter<CardState<T>> {
             animationSet.remove(object);
         }
     }
+
 
     private static class ViewHolder<T> {
         public final CardState<T> state;

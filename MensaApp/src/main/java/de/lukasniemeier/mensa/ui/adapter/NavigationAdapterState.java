@@ -18,9 +18,11 @@ public abstract class NavigationAdapterState {
         this.context = context;
     }
 
-    public void displayMenu(WeeklyMenu menu, int initialMenuIndex) {
-        stateContext.setState(
-                new NavigationAdapterMenuState(stateContext, context, menu, initialMenuIndex));
+    public int displayMenu(WeeklyMenu menu, int initialMenuIndex) {
+        NavigationAdapterMenuState menuState = new NavigationAdapterMenuState(stateContext, context,
+                menu, initialMenuIndex);
+        stateContext.setState(menuState);
+        return menuState.getSelectedPage();
     }
 
     public void displayError(String errorMessage) {

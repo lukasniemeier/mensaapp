@@ -1,13 +1,11 @@
 package de.lukasniemeier.mensa.ui;
 
 import android.app.DialogFragment;
-import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import de.lukasniemeier.mensa.R;
 import de.lukasniemeier.mensa.ui.preference.GeneralPreferenceFragment;
-import de.lukasniemeier.mensa.ui.preference.SettingsActivity;
 
 /**
  * Created on 21.11.13.
@@ -27,10 +25,8 @@ public abstract class BaseActivity extends ThemedActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                intent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT, GeneralPreferenceFragment.class.getName());
-                intent.putExtra(SettingsActivity.EXTRA_NO_HEADERS, true );
-                startActivity(intent);
+
+                startActivity(GeneralPreferenceFragment.createIntent(this));
                 return true;
             case R.id.action_about:
                 DialogFragment aboutDialog = new AboutDialog();
