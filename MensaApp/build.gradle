@@ -8,13 +8,12 @@ buildscript {
 }
 apply plugin: 'android'
 
-tasks.withType(Compile) {
+tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked"
 }
 
 project.ext {
-    signingProperty = "MensaApp.signing"
-    signingFileName = ""
+    signingConfigPath = "MensaApp.signing"
 }
 
 repositories {
@@ -28,11 +27,13 @@ dependencies {
     compile 'com.google.guava:guava:15.0'
 }
 
-if(project.hasProperty(project.signingProperty)) {
-    project.signingFileName = project.property(project.signingProperty) + ".gradle"
-    if (new File(project.signingFileName).exists()) {
-        apply from: project.signingFileName;
-    }
+def signingFileName = project.property(project.signingConfigPath)
+if (new File(signingFileName).exists()) {
+    apply from: signingFileName;
+    logger.info("applied signing config")
+} else {
+    logger.warn("signing file not found")
+    logger.warn(signingFileName)
 }
 
 android {

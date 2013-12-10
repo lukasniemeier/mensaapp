@@ -61,6 +61,7 @@ public class MealAdapterMealTypeFilter extends Filter {
         return results;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
         List<CardState<Meal>> filteredItems = adapter.getFilteredItems();
