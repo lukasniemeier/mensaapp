@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.1'
+        classpath 'com.android.tools.build:gradle:0.6.3+'
     }
 }
 apply plugin: 'android'
@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-	compile 'com.android.support:support-v4:13.0.+'
+    compile 'com.android.support:support-v4:13.0.+'
 	compile 'com.github.chrisbanes.actionbarpulltorefresh:library:0.7.+'
 	compile 'org.jsoup:jsoup:1.7.2'
     compile 'com.google.guava:guava:15.0'
@@ -37,7 +37,7 @@ if(project.hasProperty(project.signingProperty)) {
 
 android {
     compileSdkVersion 17
-    buildToolsVersion "17.0.0"
+    buildToolsVersion "19.0.0"
 
     defaultConfig {
         minSdkVersion 14

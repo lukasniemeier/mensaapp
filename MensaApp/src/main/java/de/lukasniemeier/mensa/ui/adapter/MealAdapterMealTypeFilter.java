@@ -64,7 +64,7 @@ public class MealAdapterMealTypeFilter extends Filter {
     @Override
     protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
         List<CardState<Meal>> filteredItems = adapter.getFilteredItems();
-        synchronized (filteredItems) {
+        synchronized (adapter.getFilteredItems()) {
             filteredItems.clear();
             filteredItems.addAll((Collection<CardState<Meal>>) filterResults.values);
         }
