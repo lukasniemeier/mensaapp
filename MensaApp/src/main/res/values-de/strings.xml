@@ -58,4 +58,5 @@
     <string name="mensa_address">Adresse</string>
     <string name="mensa_marked_as_default">\'%1$s als Standard gewählt.</string>
     <string name="price_template">%1$s €</string>
+    <string name="share_meal">Esse %2$s "%4$s" (%3$s) in der Mensa %1$s! Bist Du dabei?</string>
 </resources>
