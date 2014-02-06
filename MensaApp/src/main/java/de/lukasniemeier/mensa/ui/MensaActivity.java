@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import de.lukasniemeier.mensa.R;
 import de.lukasniemeier.mensa.model.Mensa;
@@ -37,6 +38,12 @@ public class MensaActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 @SuppressWarnings("unchecked") CardState<Mensa> selectedMensa = (CardState<Mensa>) adapterView.getItemAtPosition(i);
                 selectMensa(selectedMensa.getValue());
+            }
+        });
+        mensaList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                return true;
             }
         });
     }

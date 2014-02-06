@@ -78,7 +78,7 @@ public abstract class WeeklyMenuParser {
            return "1,40";
         } else if (mealName.equals("Angebot 2")) {
             return "2,00";
-        } else if (mealName.equals("Angebot 3")) {
+        } else if (mealName.equals("Angebot 3") || mealName.equals("Angebot 4")) {
             return "2,50";
         } else if (mealName.equals("Alternativ-Angebot")) {
             return "2,50";

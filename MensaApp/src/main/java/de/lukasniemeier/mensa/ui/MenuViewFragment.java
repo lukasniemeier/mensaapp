@@ -138,7 +138,7 @@ public class MenuViewFragment extends Fragment implements OnPageChangeListener {
     @Override
     public void onCreateOptionsMenu(android.view.Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        filterMenuItem = menu.findItem(filterMenuItemId);
+        /*filterMenuItem = menu.findItem(filterMenuItemId);
         if (filterMenuItem == null) {
             int none = android.view.Menu.NONE;
             filterMenuItem = menu.add(none, filterMenuItemId, none, R.string.app_name);
@@ -149,7 +149,7 @@ public class MenuViewFragment extends Fragment implements OnPageChangeListener {
                     return true;
                 }
             });
-        }
+        }*/
     }
 
     @Override

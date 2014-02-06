@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.3+'
+        classpath 'com.android.tools.build:gradle:0.8.+'
     }
 }
 apply plugin: 'android'
@@ -13,7 +13,7 @@ tasks.withType(JavaCompile) {
 }
 
 project.ext {
-    signingConfigPath = "MensaApp.signing"
+    signingConfigPath = "MensaApp.signingConfigPath"
 }
 
 repositories {
@@ -32,8 +32,8 @@ if (new File(signingFileName).exists()) {
     apply from: signingFileName;
     logger.info("applied signing config")
 } else {
-    logger.warn("signing file not found")
-    logger.warn(signingFileName)
+    logger.error("signing file not found")
+    logger.error(signingFileName)
 }
 
 android {
